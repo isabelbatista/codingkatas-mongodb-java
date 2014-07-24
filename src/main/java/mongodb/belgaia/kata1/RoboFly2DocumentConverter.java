@@ -15,6 +15,10 @@ public class RoboFly2DocumentConverter {
 									.append("size", roboFly.size)
 									.append("status", roboFly.status.name());
 		
+		if (roboFly.getId() != null) {
+			document.put("_id", roboFly.getId());
+		}
+		
 		return document;
 	}
 	

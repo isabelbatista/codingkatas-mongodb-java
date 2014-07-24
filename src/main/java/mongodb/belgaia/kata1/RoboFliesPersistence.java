@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -32,9 +31,7 @@ public class RoboFliesPersistence {
 	
 	public String saveRoboFly(RoboFly roboFly) {
 		
-		DBObject document = new BasicDBObject();
-		document = RoboFly2DocumentConverter.convertRoboFly2Document(roboFly);
-//		document.putAll(RoboFly2DocumentConverter.convertRoboFly2Document(roboFly));
+		DBObject document = RoboFly2DocumentConverter.convertRoboFly2Document(roboFly);
 		
 		DBCollection collection = database.getCollection(COLLECTION_NAME);
 		collection.insert(document);	

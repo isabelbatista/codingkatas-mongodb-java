@@ -8,6 +8,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
+import com.mongodb.ObjectId;
 
 public class RoboFliesPersistence {
 	
@@ -33,11 +34,9 @@ public class RoboFliesPersistence {
 		document.putAll(RoboFly2DocumentConverter.convertRoboFly2Document(roboFly));
 		
 		DBCollection collection = database.getCollection(COLLECTION_NAME);
-		collection.insert(document);
+		collection.insert(document);	
 		
-		
-		return null;
-		
+		return document.get("_id").toString();
 		
 	}
 }

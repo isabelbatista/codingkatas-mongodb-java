@@ -4,17 +4,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class TestRoboFliesPersistence {
 	
-	RoboFliesPersistence persistence;
+	
+	private RoboFliesPersistence persistence;
+	
 	
 	@Before
 	public void setUp() {
 		persistence = new RoboFliesPersistence();
+	}
+	
+	@After
+	public void tearDown() {
+		
+		persistence.dropDatabase();
 	}
 	
 	@Test

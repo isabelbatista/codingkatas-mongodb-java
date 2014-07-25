@@ -61,10 +61,8 @@ public class RoboFliesPersistence {
 		
 	}
 	
-	public static void main (String[] args) {
+	public void dropDatabase() {
 		
-		
-		
+		database.dropDatabase();		
 	}
-
 }

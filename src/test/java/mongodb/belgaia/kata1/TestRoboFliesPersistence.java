@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class TestRoboFliesPersistence {
 	
-	private final static String DATABASE_NAME = "testMongodbKatas";
+	private final static String DATABASE_NAME = "testmongodbkatas";
 	private RoboFliesPersistence persistence;
 		
 	

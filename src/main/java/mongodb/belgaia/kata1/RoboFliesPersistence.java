@@ -27,12 +27,6 @@ public class RoboFliesPersistence {
 			
 			mongoDbClient = new Mongo("localhost", 27017);
 			database = mongoDbClient.getDB(DATABASE_NAME);
-			
-			boolean collectionExists = database.collectionExists("COLLECTION_NAME");
-		    if (collectionExists == false) {
-		        robofliesCollection = database.createCollection("COLLECTION_NAME", null);
-		    }
-			
 			robofliesCollection = database.getCollection(COLLECTION_NAME);
 
 		} catch (UnknownHostException e) {

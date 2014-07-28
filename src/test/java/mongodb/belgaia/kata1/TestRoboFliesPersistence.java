@@ -11,13 +11,13 @@ import org.junit.Test;
 
 public class TestRoboFliesPersistence {
 	
-	
+	private final static String DATABASE_NAME = "testMongodbKatas";
 	private RoboFliesPersistence persistence;
-	
+		
 	
 	@Before
 	public void setUp() {
-		persistence = new RoboFliesPersistence();
+		persistence = new RoboFliesPersistence(DATABASE_NAME);
 	}
 	
 	@After

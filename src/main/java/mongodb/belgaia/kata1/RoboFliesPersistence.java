@@ -14,7 +14,7 @@ import com.mongodb.MongoException;
 
 public class RoboFliesPersistence {
 
-	private final String DATABASE_NAME = "mongodbkatas";
+	private final String DATABASE_NAME = "mobilerobotics";
 	private final String COLLECTION_NAME = "roboflies";
 
 	private Mongo mongoDbClient;
@@ -32,6 +32,25 @@ public class RoboFliesPersistence {
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Test instance constructor that offers setting of database
+	 * name.
+	 * @param databaseName
+	 */
+	public RoboFliesPersistence(String databaseName) {
+				
+		try {
+			
+			mongoDbClient = new Mongo("localhost", 27017);
+			database = mongoDbClient.getDB(databaseName);
+			robofliesCollection = database.getCollection(COLLECTION_NAME);
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public String saveRoboFly(RoboFly roboFly) {

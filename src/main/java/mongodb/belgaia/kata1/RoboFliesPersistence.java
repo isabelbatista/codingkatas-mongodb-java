@@ -12,6 +12,13 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
+/**
+ * Class to save roboFlies as solution for Kata 1 of the book
+ * "Coding Katas for MongoDB".
+ * 
+ * @author isabel.batista
+ *
+ */
 public class RoboFliesPersistence {
 
 	private final String DATABASE_NAME = "mobilerobotics";

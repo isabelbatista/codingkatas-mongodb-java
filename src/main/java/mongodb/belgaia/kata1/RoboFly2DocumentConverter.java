@@ -6,6 +6,15 @@ import java.util.Map;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
+/**
+ * Converter for RoboFly to mongodb document as part of the solution for Kata 1 of the book
+ * "Coding Katas for MongoDB".
+ * 
+ * Converter to convert objects of type RoboFly to mongodb documents.
+ * 
+ * @author isabel.batista
+ *
+ */
 public class RoboFly2DocumentConverter {
 	
 	public static DBObject convertRoboFly2Document(RoboFly roboFly) {

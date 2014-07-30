@@ -1,5 +1,18 @@
 package mongodb.belgaia.kata1;
 
+/**
+ * Type RoboFly as part of the solution for Kata 1 of the book
+ * "Coding Katas for MongoDB".
+ * 
+ * This type describes a robo fly.
+ * 
+ * The constructor contains all necessary information about the roboFly,
+ * instead of the _id that can be set separately with the setter method
+ * or will be set automatically by mongodb. 
+ * 
+ * @author isabel.batista
+ *
+ */
 public class RoboFly {
 	
 	String id;

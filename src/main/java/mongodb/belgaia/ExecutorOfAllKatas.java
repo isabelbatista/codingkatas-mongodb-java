@@ -1,15 +1,25 @@
 package mongodb.belgaia;
 
 import mongodb.belgaia.kata1.RoboFliesPersistence;
-import mongodb.belgaia.kata2.MeasurementPersistence;
 import mongodb.belgaia.kata2.MongoImporteur;
 
+/**
+ * Class to run all kata solutions from the book "Coding Katas for MongoDB".
+ * 
+ * This is for getting the complete database.
+ * 
+ * @author isabel.batista
+ *
+ */
 public class ExecutorOfAllKatas {
 	
-	public static final void main (String[] args) {
+	private void startKataOne() {
 		
 		System.out.println("Executing Kata 1");
 		RoboFliesPersistence.main(null);
+	}
+	
+	private void startKataTwo() {
 		
 		System.out.println("Executing Kata 2");
 		
@@ -19,5 +29,11 @@ public class ExecutorOfAllKatas {
 		String[] commandParameters = {collectionName, fileExtension, fileName};
 		MongoImporteur.main(commandParameters);
 	}
-
+	
+	public static final void main (String[] args) {
+		
+		ExecutorOfAllKatas executor = new ExecutorOfAllKatas();
+		executor.startKataOne();
+		executor.startKataTwo();		
+	}
 }

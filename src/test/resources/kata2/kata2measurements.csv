@@ -1,0 +1,4 @@
+_id, Timestamp, RoboFlyID, Humidity (in percent), AirPressure (in hecto pascal), Luminosity (in lux), SoundIntensity (in decibel), Temperature (in Celsius), CO2Content (in percent)
+measurement_average_1, 1398521220000, RoboFly_ID_1, 20.01, 1013.25, 600, 55, 17, 0.04
+measurement_average_2, 1398521220000, RoboFly_ID_2, 21.40, 1011.78, 598, 75, 16.5, 0.04
+measurement_average_3, 1398521220000, RoboFly_ID_3, 16.90, 1012.25, 420, 0, 17.1, 0.02

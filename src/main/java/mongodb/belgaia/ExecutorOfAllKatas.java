@@ -1,5 +1,6 @@
 package mongodb.belgaia;
 
+import mongodb.belgaia.kata1.Kata1;
 import mongodb.belgaia.kata1.RoboFliesPersistence;
 import mongodb.belgaia.kata2.Kata2;
 
@@ -18,7 +19,8 @@ public class ExecutorOfAllKatas {
 	private void startKataOne() {
 		
 		System.out.println("Executing Kata 1");
-		RoboFliesPersistence.main(null);
+		Kata1 kata1 = new Kata1();
+		kata1.startKata1();
 	}
 	
 	private void startKataTwo() {
@@ -32,6 +34,14 @@ public class ExecutorOfAllKatas {
 
 		Kata2 kataSolution = new Kata2();
 		kataSolution.startKata2(collectionName, exportType, fileName);
+		
+		System.out.println("--- Waiting for some seconds ---");
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println("Executing Kata 2.2");
 		System.out.println("##################");

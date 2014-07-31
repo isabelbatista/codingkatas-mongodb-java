@@ -2,7 +2,9 @@ package mongodb.belgaia.kata2dot2;
 
 
 import mongodb.belgaia.kata2.MongoDbConnector;
+import mongodb.belgaia.kata2.Robofly2MeasurementReference;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,13 +24,19 @@ public class TestMongoDbConnector {
 		mongodbConnector.saveRoboFly(createRoboFlyDocument());
 	}
 	
+	@After
+	public void tearDown() {
+		
+		mongodbConnector.dropDatabase();
+	}
+	
 	@Test
 	public void shouldSetDocumentReference() {
 		
 		String roboFlyId = "RoboFly_ID_1";
+		Robofly2MeasurementReference reference = new Robofly2MeasurementReference("roboflies", "measurements", "robofly", roboFlyId, getDummyMeasurementDocument());
 		
-		// one to many
-		DBObject document = mongodbConnector.setDocumentReference("roboflies", roboFlyId, "robofly", getDummyMeasurementDocument());
+		mongodbConnector.setDocumentReference(reference);
 		
 		DBObject referencedDoc = mongodbConnector.getDocReference("measurements", "robofly");
 		

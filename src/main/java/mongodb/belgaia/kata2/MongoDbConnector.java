@@ -65,21 +65,21 @@ public class MongoDbConnector {
 	 * Sets a reference of the document with the given referenceId of the
 	 * given collection to the given document object.
 	 * 
-	 * @param collectionName name of the collection where to find the referenced document
+	 * @param refCollectionName name of the collection where to find the referenced document
 	 * @param referenceId the id of the referenced document
 	 * @param fieldKey the key of the document field that contains the reference
+	 * @param docCollectionName name of the collection where to find the given document to set the reference
 	 * @param document the document where the reference must be set
 	 * @return
 	 */
-	public void setDocumentReference(String collectionName, String referenceId, String fieldKey, DBObject document) {
+	public void setDocumentReference(Robofly2MeasurementReference documentReference) {
 		
-		DBRef reference = new DBRef(database, collectionName, referenceId);
-		DBObject referencedDocument = reference.fetch();
+		DBRef reference = new DBRef(database, documentReference.getReferenceCollection(), documentReference.getReferenceId());
 		
+		DBObject document = documentReference.getDocument();
 		document.put("robofly", reference);
 				
-		// extract collectionname to method paramter
-		DBCollection collection = database.getCollection("measurements");
+		DBCollection collection = database.getCollection(documentReference.getDocumentCollection());
 		collection.save(document);
 
 	}

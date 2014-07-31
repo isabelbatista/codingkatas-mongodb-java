@@ -71,22 +71,17 @@ public class MongoDbConnector {
 	 * @param document the document where the reference must be set
 	 * @return
 	 */
-	public DBObject setDocumentReference(String collectionName, String referenceId, String fieldKey, DBObject document) {
+	public void setDocumentReference(String collectionName, String referenceId, String fieldKey, DBObject document) {
 		
 		DBRef reference = new DBRef(database, collectionName, referenceId);
 		DBObject referencedDocument = reference.fetch();
 		
-		if (document.containsField(fieldKey)) {
-			document.put(fieldKey, referencedDocument);
-		}
+		document.put("robofly", reference);
 				
 		// extract collectionname to method paramter
 		DBCollection collection = database.getCollection("measurements");
 		collection.save(document);
-		
-		
-		
-		return null;
+
 	}
 	
 	public DBObject getDocReference(String collectionName, String refFieldName) {

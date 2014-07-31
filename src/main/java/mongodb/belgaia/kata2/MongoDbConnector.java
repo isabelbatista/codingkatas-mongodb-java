@@ -1,7 +1,6 @@
 package mongodb.belgaia.kata2;
 
 import java.net.UnknownHostException;
-import java.util.List;
 
 import org.bson.types.ObjectId;
 
@@ -54,6 +53,15 @@ public class MongoDbConnector {
 		return collection.find().size();
 	}
 	
+	public DBObject getMeasurement(String docId) {
+		
+		DBCollection collection = database.getCollection("measurements");
+		DBObject document2find = new BasicDBObject();
+		document2find.put("_id", docId);
+		
+		return collection.findOne(document2find);
+	}
+	
 	public void saveRoboFly(DBObject roboFlyDocument) {
 		
 		DBCollection collection = database.getCollection("roboflies");
@@ -77,7 +85,7 @@ public class MongoDbConnector {
 		DBRef reference = new DBRef(database, documentReference.getReferenceCollection(), documentReference.getReferenceId());
 		
 		DBObject document = documentReference.getDocument();
-		document.put("robofly", reference);
+		document.put(documentReference.getReferenceField(), reference);
 				
 		DBCollection collection = database.getCollection(documentReference.getDocumentCollection());
 		collection.save(document);

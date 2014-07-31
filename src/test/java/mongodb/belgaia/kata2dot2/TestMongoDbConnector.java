@@ -43,6 +43,18 @@ public class TestMongoDbConnector {
 		Assert.assertNotNull(referencedDoc);
 	}
 	
+	@Test
+	public void shouldReturnOneMeasurementDocument() {
+		
+		String measurementId = "measurement_average_1";
+		
+		DBObject foundDocument = mongodbConnector.getMeasurement(measurementId);
+		
+		Assert.assertNotNull(foundDocument);
+		Assert.assertNotNull(foundDocument.get("_id"));
+		Assert.assertEquals(measurementId, foundDocument.get("_id").toString());
+	}
+	
 	private DBObject getDummyMeasurementDocument() {
 		
 		DBObject measurementDocument = new BasicDBObject("name", "measurement_average_1")
@@ -60,5 +72,4 @@ public class TestMongoDbConnector {
 		
 		return roboFlyDocument;
 	}
-
 }

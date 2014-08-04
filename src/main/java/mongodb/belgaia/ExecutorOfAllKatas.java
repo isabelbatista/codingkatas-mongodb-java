@@ -1,7 +1,6 @@
 package mongodb.belgaia;
 
 import mongodb.belgaia.kata1.Kata1;
-import mongodb.belgaia.kata1.RoboFliesPersistence;
 import mongodb.belgaia.kata2.Kata2;
 
 /**

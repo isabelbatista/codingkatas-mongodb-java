@@ -3,6 +3,8 @@ package mongodb.belgaia.kata1;
 import java.util.HashMap;
 import java.util.Map;
 
+import mongodb.belgaia.shared.RoboFly;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
@@ -19,10 +21,10 @@ public class RoboFly2DocumentConverter {
 	
 	public static DBObject convertRoboFly2Document(RoboFly roboFly) {
 		
-		DBObject document = new BasicDBObject("name", roboFly.name)
-									.append("constructionYear", roboFly.constructionYear)
-									.append("size", roboFly.size)
-									.append("status", roboFly.status.name());
+		DBObject document = new BasicDBObject("name", roboFly.getName())
+									.append("constructionYear", roboFly.getConstructionYear())
+									.append("size", roboFly.getSize())
+									.append("status", roboFly.getStatus());
 		
 		if (roboFly.getId() != null) {
 			document.put("_id", roboFly.getId());

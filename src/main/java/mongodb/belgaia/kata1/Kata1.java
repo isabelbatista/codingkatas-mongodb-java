@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mongodb.belgaia.shared.RoboFly;
+
 /**
  * Solution for Kata 1 from the Book
  * "Coding Katas for MongoDB"

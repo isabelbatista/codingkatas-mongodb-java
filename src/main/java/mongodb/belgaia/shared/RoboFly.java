@@ -1,4 +1,6 @@
-package mongodb.belgaia.kata1;
+package mongodb.belgaia.shared;
+
+import mongodb.belgaia.kata1.Status;
 
 /**
  * Type RoboFly as part of the solution for Kata 1 of the book
@@ -32,6 +34,21 @@ public class RoboFly {
 		
 	}
 
+	public int getConstructionYear() {
+		return constructionYear;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public int getServiceTime() {
+		return serviceTime;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
 	public String getId() {
 		return id;
 	}
@@ -39,4 +56,9 @@ public class RoboFly {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	public String getName() {
+		return name;
+	}
+
 }

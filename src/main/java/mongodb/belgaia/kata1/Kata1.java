@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mongodb.belgaia.shared.RoboFly;
-
 /**
  * Solution for Kata 1 from the Book
  * "Coding Katas for MongoDB"
@@ -35,15 +33,15 @@ public class Kata1 {
 
 		Map<String, RoboFly> roboFlyMap = new HashMap<String, RoboFly>();
 
-		RoboFly roboFly1 = new RoboFly("Calliphora", 2014, 2, 60, Status.OK);
+		RoboFly roboFly1 = new RoboFly("Calliphora", 2014, 2, 60, RoboFlyStatus.OK);
 		roboFly1.setId("RoboFly_ID_1");
 		roboFlyMap.put(roboFly1.getId(), roboFly1);
 
-		RoboFly roboFly2 = new RoboFly("Lucilia", 2014, 2, 60, Status.OK);
+		RoboFly roboFly2 = new RoboFly("Lucilia", 2014, 2, 60, RoboFlyStatus.OK);
 		roboFly2.setId("RoboFly_ID_2");
 		roboFlyMap.put(roboFly2.getId(), roboFly2);
 
-		RoboFly roboFly3 = new RoboFly("Onesia", 2014, 2, 60, Status.OK);
+		RoboFly roboFly3 = new RoboFly("Onesia", 2014, 2, 60, RoboFlyStatus.OK);
 		roboFly3.setId("RoboFly_ID_3");
 		roboFlyMap.put(roboFly3.getId(), roboFly3);
 

@@ -1,6 +1,5 @@
-package mongodb.belgaia.shared;
+package mongodb.belgaia.kata4;
 
-import mongodb.belgaia.kata1.Status;
 
 /**
  * Type RoboFly as part of the solution for Kata 1 of the book
@@ -15,16 +14,17 @@ import mongodb.belgaia.kata1.Status;
  * @author isabel.batista
  *
  */
-public class RoboFly {
+class RoboFly {
 	
 	String id;
 	String name;
 	int constructionYear;
 	int size;				// in millimeters
 	int serviceTime;		// maximum in minutes
-	Status status;
+	RoboFlyStatus status;
+	RoboFlyType type;
 	
-	public RoboFly(String name, int constructionYear, int size, int serviceTime, Status status) {
+	public RoboFly(String name, int constructionYear, int size, int serviceTime, RoboFlyStatus status) {
 		
 		this.name = name;
 		this.constructionYear = constructionYear;
@@ -46,7 +46,7 @@ public class RoboFly {
 		return serviceTime;
 	}
 
-	public Status getStatus() {
+	public RoboFlyStatus getStatus() {
 		return status;
 	}
 	public String getId() {

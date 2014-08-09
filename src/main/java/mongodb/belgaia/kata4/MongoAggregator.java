@@ -3,8 +3,6 @@ package mongodb.belgaia.kata4;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import mongodb.belgaia.shared.RoboFly;
-
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;

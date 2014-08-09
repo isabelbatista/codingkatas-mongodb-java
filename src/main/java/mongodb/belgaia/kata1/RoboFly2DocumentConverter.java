@@ -3,8 +3,6 @@ package mongodb.belgaia.kata1;
 import java.util.HashMap;
 import java.util.Map;
 
-import mongodb.belgaia.shared.RoboFly;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 

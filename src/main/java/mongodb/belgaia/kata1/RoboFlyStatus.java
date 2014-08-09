@@ -10,6 +10,6 @@ package mongodb.belgaia.kata1;
  * @author isabel.batista
  *
  */
-public enum Status {
+public enum RoboFlyStatus {
 	OK;
 }

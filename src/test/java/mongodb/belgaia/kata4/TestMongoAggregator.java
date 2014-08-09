@@ -3,8 +3,6 @@ package mongodb.belgaia.kata4;
 import java.util.ArrayList;
 import java.util.List;
 
-import mongodb.belgaia.shared.RoboFly;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

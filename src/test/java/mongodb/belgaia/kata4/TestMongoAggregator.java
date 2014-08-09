@@ -1,4 +1,4 @@
-package mongodb.belgaia.kata3;
+package mongodb.belgaia.kata4;
 
 import java.util.ArrayList;
 import java.util.List;

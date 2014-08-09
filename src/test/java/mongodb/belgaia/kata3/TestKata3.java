@@ -35,9 +35,10 @@ public class TestKata3 {
 		List<String> flyIds = kata.saveRoboFlies(roboFlies);
 		
 		Assert.assertNotNull(flyIds);
-		
+		Assert.assertEquals(2, flyIds.size());
+		Assert.assertNotEquals(flyIds.get(0), flyIds.get(1));
 	}
-	
+		
 	private List<RoboFly> createDummyFlies() {
 		
 		List<RoboFly> roboFlies = new ArrayList<RoboFly>();
@@ -49,8 +50,16 @@ public class TestKata3 {
 										 .serviceTime(25)
 										 .status(Status.OK)
 										 .type(Type.DRAGONFLY).build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_5", "Calopteryx");
+		RoboFly roboFly2 = roboFlyBuilder.constructionYear(2014)
+										 .size(5)
+										 .serviceTime(25)
+										 .status(Status.OK)
+										 .type(Type.DRAGONFLY).build();
 				
 		roboFlies.add(roboFly1);
+		roboFlies.add(roboFly2);
 		
 		return roboFlies;
 		

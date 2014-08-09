@@ -37,6 +37,13 @@ public class Kata3 {
 		}		
 	}
 	
+	public void startKata3() {
+		
+		final List<RoboFly> roboFlies = getRoboFlyList();
+		saveRoboFlies(roboFlies);
+	}
+	
+	
 	/**
 	 * Saves a list of robotic flies and returns the initial IDs of these flies
 	 * that are set by the database.
@@ -95,6 +102,11 @@ public class Kata3 {
 		return convertDocument2RoboFly(newDoc);
 	}
 	
+	public void dropDatabase() {
+		
+		database.dropDatabase();
+	}
+	
 	/**
 	 * Converts a robotic fly of type RoboFly to a mongodb compatible document type.
 	 * 
@@ -108,11 +120,8 @@ public class Kata3 {
 		roboFlyDoc.put("name", roboFly.getName());
 		roboFlyDoc.put("constructionYear", roboFly.getConstructionYear());
 		roboFlyDoc.put("size", roboFly.getSize());
-		roboFlyDoc.put("serviceTime", roboFly.getServiceTime());
-		
-		
+		roboFlyDoc.put("serviceTime", roboFly.getServiceTime());		
 		roboFlyDoc.put("status", roboFly.getStatus() != null ? roboFly.getStatus().toString() : null);
-//		roboFlyDoc.put("type", roboFly.getType() != null ? roboFly.getType().toString() : null);
 		
 		return roboFlyDoc;
 		
@@ -145,4 +154,77 @@ public class Kata3 {
 		
 		return roboFly;
 	}	
+	
+	private List<RoboFly> getRoboFlyList() {
+		
+		final int consYear = 2014;
+		
+		final int dragonFlySize = 5;
+		final int dragonFlyServiceTime = 25;
+		
+		final int moskitoSize = 2;
+		final int moskitoServiceTime = 120;
+		
+		final int copepodSize = 8;
+		final int copepodServiceTime = 90;
+		
+		List<RoboFly> roboFlies = new ArrayList<RoboFly>();
+		
+		RoboFly.Builder roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_4", "Ischnura");
+		RoboFly dragonFly1 = roboFlyBuilder.constructionYear(consYear)
+										.size(dragonFlySize)
+										.serviceTime(dragonFlyServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.DRAGONFLY)
+										.build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_5", "Calopteryx");
+		RoboFly dragonFly2 = roboFlyBuilder.constructionYear(consYear)
+										.size(dragonFlySize)
+										.serviceTime(dragonFlyServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.DRAGONFLY)
+										.build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_6", "Dahliana");
+		RoboFly moskito1 = roboFlyBuilder.constructionYear(consYear)
+										.size(moskitoSize)
+										.serviceTime(moskitoServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.MOSKITO)
+										.build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_7", "Finlaya");
+		RoboFly moskito2 = roboFlyBuilder.constructionYear(consYear)
+										.size(moskitoSize)
+										.serviceTime(moskitoServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.MOSKITO)
+										.build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_8", "Mormon");
+		RoboFly copepod1 = roboFlyBuilder.constructionYear(consYear)
+										.size(copepodSize)
+										.serviceTime(copepodServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.RUDERFUSSKREBS)
+										.build();
+		
+		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_9", "Harpa");
+		RoboFly copepod2 = roboFlyBuilder.constructionYear(consYear)
+										.size(copepodSize)
+										.serviceTime(copepodServiceTime)
+										.status(RoboFly.Status.OK)
+										.type(RoboFly.Type.RUDERFUSSKREBS)
+										.build();
+		
+		roboFlies.add(dragonFly1);
+		roboFlies.add(dragonFly2);
+		roboFlies.add(moskito1);
+		roboFlies.add(moskito2);
+		roboFlies.add(copepod1);
+		roboFlies.add(copepod2);		
+		
+		return roboFlies;
+	}
 }

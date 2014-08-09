@@ -2,6 +2,7 @@ package mongodb.belgaia;
 
 import mongodb.belgaia.kata1.Kata1;
 import mongodb.belgaia.kata2.Kata2;
+import mongodb.belgaia.kata3.Kata3;
 
 /**
  * Class to run all kata solutions from the book "Coding Katas for MongoDB".
@@ -47,11 +48,23 @@ public class ExecutorOfAllKatas {
 		kataSolution.startKata2dot2(DATABASE_NAME);
 	}
 	
+	private void startKataThree() {
+		
+		System.out.println("Executing Kata 3");
+		System.out.println("##################");
+		
+		Kata3 kataSolution = new Kata3(DATABASE_NAME);
+		kataSolution.startKata3();
+		
+		
+	}
+	
 	public static final void main (String[] args) {
 		
 		ExecutorOfAllKatas executor = new ExecutorOfAllKatas();
 		executor.startKataOne();
 		executor.startKataTwo();
+		executor.startKataThree();
 		
 		System.out.println("##################");
 		System.out.println("Executed all Katas");

@@ -11,5 +11,11 @@ package mongodb.belgaia.kata1;
  *
  */
 public enum RoboFlyStatus {
-	OK;
+	OK("ok");
+	
+	String name;
+	
+	RoboFlyStatus(String name) {
+		this.name = name;
+	}
 }

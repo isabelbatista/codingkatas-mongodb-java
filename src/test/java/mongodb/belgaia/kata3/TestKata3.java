@@ -28,6 +28,7 @@ public class TestKata3 {
 	@After
 	public void tearDown() {
 		
+		kata.dropDatabase();
 	}
 	
 	@Test

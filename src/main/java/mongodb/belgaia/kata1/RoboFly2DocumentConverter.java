@@ -22,7 +22,7 @@ public class RoboFly2DocumentConverter {
 		DBObject document = new BasicDBObject("name", roboFly.getName())
 									.append("constructionYear", roboFly.getConstructionYear())
 									.append("size", roboFly.getSize())
-									.append("status", roboFly.getStatus());
+									.append("status", roboFly.getStatus().name);
 		
 		if (roboFly.getId() != null) {
 			document.put("_id", roboFly.getId());

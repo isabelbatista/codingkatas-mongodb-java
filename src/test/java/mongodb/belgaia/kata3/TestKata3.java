@@ -35,7 +35,8 @@ public class TestKata3 {
 	public void shouldCreateNewRoboFlies() {
 	
 		final List<RoboFly> roboFlies = createDummyFlies();
-		List<String> flyIds = kata.saveRoboFlies(roboFlies);
+		boolean includeType = true;
+		List<String> flyIds = kata.saveRoboFlies(roboFlies, includeType);
 		
 		Assert.assertNotNull(flyIds);
 		Assert.assertEquals(2, flyIds.size());
@@ -96,7 +97,7 @@ public class TestKata3 {
 										 .serviceTime(1)
 										 .status(Status.OK).build();
 		
-		kata.saveRoboFly(roboFly);									
+		kata.saveRoboFly(roboFly, false);									
 	}
 	
 

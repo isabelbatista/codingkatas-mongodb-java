@@ -39,8 +39,14 @@ public class Kata3 {
 	
 	public void startKata3() {
 		
-		final List<RoboFly> roboFlies = getRoboFlyList();
-		saveRoboFlies(roboFlies);
+		System.out.println("Save additional robotic files of type dragonfly, moskito and copepod.");
+		saveRoboFlies(getRoboFlyList(), true);
+		
+		System.out.println("Add type 'Fly' to the three already existing robotic flies.");
+		addTypeToFly("RoboFly_ID_1", RoboFly.Type.FLY, false);
+		addTypeToFly("RoboFly_ID_2", RoboFly.Type.FLY, false);
+		addTypeToFly("RoboFly_ID_3", RoboFly.Type.FLY, false);
+		
 	}
 	
 	
@@ -48,15 +54,17 @@ public class Kata3 {
 	 * Saves a list of robotic flies and returns the initial IDs of these flies
 	 * that are set by the database.
 	 * 
-	 * @param roboFlies	The List of robotic flies to save in the database.
-	 * @return			The List of IDs of the newly set robotic flies.
+	 * @param roboFlies		The List of robotic flies to save in the database.
+	 * @param typeIncluded 	Whether the type is included in the document.
+	 * 						Needed to create initial test set of robotic flies without a type (set to false for test case).
+	 * @return				The List of IDs of the newly set robotic flies.
 	 */
-	public List<String> saveRoboFlies(List<RoboFly> roboFlies) {
+	public List<String> saveRoboFlies(List<RoboFly> roboFlies, boolean typeIncluded) {
 		
 		final List<String> flyIds = new ArrayList<String>();
 		
 		for(RoboFly fly : roboFlies) {
-			flyIds.add(saveRoboFly(fly));
+			flyIds.add(saveRoboFly(fly, typeIncluded));
 		}
 		
 		return flyIds;
@@ -67,12 +75,14 @@ public class Kata3 {
 	 * Saves a single robotic fly and returns the initial ID of this fly
 	 * that is set by the database.
 	 * 
-	 * @param roboFly	The robotic fly to save in the database.
-	 * @return			The ID of the newly saved robotic fly.
+	 * @param roboFly		The robotic fly to save in the database.
+	 * @param typeIncluded 	Whether the type is included in the document.
+	 * 						Needed to create initial test set of robotic flies without a type (set to false for test case).
+	 * @return				The ID of the newly saved robotic fly.
 	 */
-	public String saveRoboFly(RoboFly roboFly ) {
+	public String saveRoboFly(RoboFly roboFly, boolean typeIncluded) {
 		
-		DBObject roboFlyDocument = convertRoboFly2Document(roboFly);
+		DBObject roboFlyDocument = convertRoboFly2Document(roboFly, typeIncluded);
 		
 		roboFliesCollection.save(roboFlyDocument);
 		return roboFlyDocument.get("_id").toString();
@@ -110,10 +120,12 @@ public class Kata3 {
 	/**
 	 * Converts a robotic fly of type RoboFly to a mongodb compatible document type.
 	 * 
-	 * @param roboFly	The robotic fly to convert.
-	 * @return			The mongodb compatible document that can be inserted in mongodb.
+	 * @param roboFly		The robotic fly to convert.
+	 * @param typeIncluded 	Whether the type is included in the document.
+	 * 						Needed to create initial test set of robotic flies without a type (set to false for test case).
+	 * @return				The mongodb compatible document that can be inserted in mongodb.
 	 */
-	private DBObject convertRoboFly2Document(RoboFly roboFly) {
+	private DBObject convertRoboFly2Document(RoboFly roboFly, boolean typeIncluded) {
 		
 		DBObject roboFlyDoc = new BasicDBObject();
 		roboFlyDoc.put("_id", roboFly.getId());
@@ -122,6 +134,10 @@ public class Kata3 {
 		roboFlyDoc.put("size", roboFly.getSize());
 		roboFlyDoc.put("serviceTime", roboFly.getServiceTime());		
 		roboFlyDoc.put("status", roboFly.getStatus() != null ? roboFly.getStatus().toString() : null);
+		
+		if (typeIncluded) {
+			roboFlyDoc.put("type", roboFly.getType() != null ? roboFly.getType().toString() : null);
+		}
 		
 		return roboFlyDoc;
 		
@@ -160,13 +176,13 @@ public class Kata3 {
 		final int consYear = 2014;
 		
 		final int dragonFlySize = 5;
-		final int dragonFlyServiceTime = 25;
+		final int dragonFlyServiceTime = 25; // in minutes
 		
 		final int moskitoSize = 2;
-		final int moskitoServiceTime = 120;
+		final int moskitoServiceTime = 120; // in minutes
 		
 		final int copepodSize = 8;
-		final int copepodServiceTime = 90;
+		final int copepodServiceTime = 90; // in minutes
 		
 		List<RoboFly> roboFlies = new ArrayList<RoboFly>();
 		
@@ -207,7 +223,7 @@ public class Kata3 {
 										.size(copepodSize)
 										.serviceTime(copepodServiceTime)
 										.status(RoboFly.Status.OK)
-										.type(RoboFly.Type.RUDERFUSSKREBS)
+										.type(RoboFly.Type.CAPEPOD)
 										.build();
 		
 		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_9", "Harpa");
@@ -215,7 +231,7 @@ public class Kata3 {
 										.size(copepodSize)
 										.serviceTime(copepodServiceTime)
 										.status(RoboFly.Status.OK)
-										.type(RoboFly.Type.RUDERFUSSKREBS)
+										.type(RoboFly.Type.CAPEPOD)
 										.build();
 		
 		roboFlies.add(dragonFly1);

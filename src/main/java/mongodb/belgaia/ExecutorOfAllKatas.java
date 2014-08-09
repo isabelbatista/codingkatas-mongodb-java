@@ -54,9 +54,7 @@ public class ExecutorOfAllKatas {
 		System.out.println("##################");
 		
 		Kata3 kataSolution = new Kata3(DATABASE_NAME);
-		kataSolution.startKata3();
-		
-		
+		kataSolution.startKata3();		
 	}
 	
 	public static final void main (String[] args) {

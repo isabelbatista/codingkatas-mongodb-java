@@ -98,8 +98,9 @@ class RoboFly {
 		}
 	}
 	
+	// TODO: find a better solution for inserting enum type to the database
 	enum Status {
-		OK("ok");
+		OK("OK");
 		
 		String name;
 		
@@ -108,8 +109,18 @@ class RoboFly {
 		}
 	}
 	
+	// TODO: find a better solution for inserting enum type to the database
 	enum Type {
 
-		FLY, MOSKITO, DRAGONFLY, RUDERFUSSKREBS
+		FLY("FLY"),
+		MOSKITO("MOSKITO"),
+		DRAGONFLY("DRAGONFLY"),
+		CAPEPOD("CAPEPOD");
+		
+		String name;
+		
+		Type(String name) {
+			this.name = name;
+		}
 	}
 }

@@ -1,7 +1,8 @@
 package mongodb.belgaia.kata3;
 
+
 class RoboFly {
-	
+		
 	private final String id;
 	private final String name;
 	
@@ -98,7 +99,13 @@ class RoboFly {
 	}
 	
 	enum Status {
-		OK;
+		OK("ok");
+		
+		String name;
+		
+		Status(String name) {
+			this.name = name;
+		}
 	}
 	
 	enum Type {

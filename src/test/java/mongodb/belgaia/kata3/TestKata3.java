@@ -21,6 +21,8 @@ public class TestKata3 {
 	public void setUp() {
 		
 		kata = new Kata3(TEST_DATABASE_NAME);
+		
+		saveMockRoboFlyWithoutType();
 	}
 	
 	@After
@@ -37,6 +39,20 @@ public class TestKata3 {
 		Assert.assertNotNull(flyIds);
 		Assert.assertEquals(2, flyIds.size());
 		Assert.assertNotEquals(flyIds.get(0), flyIds.get(1));
+	}
+	
+	@Test
+	public void shouldAddTypeToExistingFliesIfNotAlreadySet() {
+		
+		final String idOfExistingFly = "RoboFly_ID_1";
+		final boolean overwrite = false;
+		
+		RoboFly updatedRoboFly = kata.addTypeToFly(idOfExistingFly, RoboFly.Type.FLY, overwrite);
+		
+		Assert.assertNotNull(updatedRoboFly);
+		Assert.assertEquals(idOfExistingFly, updatedRoboFly.getId());
+		Assert.assertEquals(RoboFly.Type.FLY.name(), updatedRoboFly.getType().toString());
+		
 	}
 		
 	private List<RoboFly> createDummyFlies() {
@@ -63,6 +79,23 @@ public class TestKata3 {
 		
 		return roboFlies;
 		
+	}
+	
+	/**
+	 * Creates a new robo fly mock without a type.
+	 * 
+	 * @return	The robotic fly mock without a given type.
+	 */
+	private void saveMockRoboFlyWithoutType() {
+		
+		RoboFly.Builder roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_1", "Calliphora");
+		
+		RoboFly roboFly = roboFlyBuilder.constructionYear(2014)
+										 .size(2)
+										 .serviceTime(1)
+										 .status(Status.OK).build();
+		
+		kata.saveRoboFly(roboFly);									
 	}
 	
 

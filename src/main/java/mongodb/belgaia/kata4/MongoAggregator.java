@@ -3,6 +3,7 @@ package mongodb.belgaia.kata4;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -46,6 +47,10 @@ public class MongoAggregator {
 	public List<RoboFly> getRoboFliesWithDifferingVolume() {
 		
 		DBCollection collection = database.getCollection("measurements");
+		
+//		DBObject average = new BasicDBObject("$avg", new BasicDBObject("SoundIntensitiy (in decibel)"));
+//		
+//		DBObject match = new BasicDBObject("$match", new BasicDBObject("SoundIntensity", 0));
 		
 		return null;
 	}

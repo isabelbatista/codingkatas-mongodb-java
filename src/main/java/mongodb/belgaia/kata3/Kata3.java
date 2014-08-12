@@ -118,6 +118,22 @@ public class Kata3 {
 	}
 	
 	/**
+	 * Needed for Kata 3.2
+	 * 
+	 * @param listOfFields
+	 * @param sourceCollection
+	 * @param targetCollection
+	 * @return
+	 */
+	public List<Profile> extractFieldsToProfile(List<String> listOfFields, String sourceCollection, String targetCollection) {
+		
+		// TODO: get fields from each document in the source collection
+		
+		
+		return null;
+	}
+	
+	/**
 	 * Converts a robotic fly of type RoboFly to a mongodb compatible document type.
 	 * 
 	 * @param roboFly		The robotic fly to convert.

@@ -4,9 +4,12 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mongodb.belgaia.kata3.RoboFly.Type;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
@@ -15,10 +18,12 @@ public class Kata3 {
 	
 	private static final String DATABASE_NAME = "mobilerobotics";
 	private static final String ROBOFLIES_COLLECTION_NAME = "roboflies";
+	private static final String PROFILES_COLLECTION_NAME = "profiles";
 	
 	private Mongo mongodbClient;
 	private DB database;
 	private DBCollection roboFliesCollection;
+	private DBCollection profilesCollection;
 	
 	public Kata3(String databaseName) {
 	
@@ -31,6 +36,7 @@ public class Kata3 {
 			
 			database = mongodbClient.getDB(databaseName);
 			roboFliesCollection = database.getCollection(ROBOFLIES_COLLECTION_NAME);
+			profilesCollection = database.getCollection(PROFILES_COLLECTION_NAME);
 			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -117,21 +123,112 @@ public class Kata3 {
 		database.dropDatabase();
 	}
 	
+	public List<Profile> refactorDatabase(String sourceCollection, String targetCollection) throws CollectionDoesNotExistExc {
+		
+		extractFieldsToProfile(sourceCollection, targetCollection);
+		removeFieldsFromCollection(sourceCollection);
+		return null;
+	}
+	
 	/**
 	 * Needed for Kata 3.2
 	 * 
 	 * @param listOfFields
 	 * @param sourceCollection
 	 * @param targetCollection
-	 * @return
+	 * @throws CollectionDoesNotExistExc 
 	 */
-	public List<Profile> extractFieldsToProfile(List<String> listOfFields, String sourceCollection, String targetCollection) {
+	public void extractFieldsToProfile(String sourceCollection, String targetCollection) throws CollectionDoesNotExistExc {
 		
-		// TODO: get fields from each document in the source collection
-		
-		
-		return null;
+		if(database.collectionExists(sourceCollection)) {
+			
+			// get all documents of the source collection and extract the fields from each document
+			DBCursor sourceCollectionCursor = database.getCollection(sourceCollection).find();
+			
+			List<String> foundTypes = new ArrayList<String>();
+						
+			while(sourceCollectionCursor.hasNext()) {
+				DBObject document = sourceCollectionCursor.next();
+				
+				String type = String.valueOf(document.get("type"));
+				if(foundTypes.contains(type)) {
+					
+					continue;
+					
+				} else {
+					
+					foundTypes.add(type);
+				
+					Integer size = (Integer) document.get("size");
+					Integer serviceTime = (Integer) document.get("serviceTime");
+										
+					Profile profile = new Profile();
+					profile.setId("ROBOFLY_ID_" + type);
+					profile.setRoboflyType(Type.valueOf(type));
+					profile.setSize(size);
+					profile.setServiceTime(serviceTime);
+					
+					// create entry in profile collection
+					DBCollection roboflyProfilesCollection = database.getCollection(targetCollection);
+					roboflyProfilesCollection.save(convertProfile2Document(profile));
+				}
+			}
+		} else {
+			throw new CollectionDoesNotExistExc("Collection does not exist: " + sourceCollection);
+		}
 	}
+	
+	public void removeFieldsFromCollection(String sourceCollection) {
+		
+		// remove fields "type", "size" and "serviceTime"
+		DBCollection collection = database.getCollection(sourceCollection);
+		
+		BasicDBObject update = new BasicDBObject();
+		update.remove("type");
+		update.remove("size");
+		update.remove("serviceTime");
+		collection.update(new BasicDBObject(), update);
+		
+		
+		
+		
+		
+//		DBCursor roboFliesCursor = collection.find();
+//		while(roboFliesCursor.hasNext()) {
+//			DBObject document = roboFliesCursor.next();
+//			document.removeField("type");
+//			document.removeField("size");
+//			document.removeField("serviceTime");
+//			
+//			collection.update(new BasicDBObject(), document);
+//		}		
+	}
+	
+	public List<Profile> getProfiles() {
+		
+		List<Profile> profiles = new ArrayList<Profile>();
+		
+		DBCursor profileDocuments = profilesCollection.find();
+		while(profileDocuments.hasNext()) {
+			profiles.add(convertDocument2Profile(profileDocuments.next()));
+		}
+		return profiles;
+	}
+	
+	public List<RoboFly> getRoboFlies() {
+		
+		List<RoboFly> roboFlies = new ArrayList<RoboFly>();
+		
+		DBCursor roboFlyDocuments = roboFliesCollection.find();
+		while(roboFlyDocuments.hasNext()) {
+			
+			roboFlies.add(convertDocument2RoboFly(roboFlyDocuments.next()));
+			
+		}
+		
+		return roboFlies;
+	}
+	
 	
 	/**
 	 * Converts a robotic fly of type RoboFly to a mongodb compatible document type.
@@ -157,6 +254,28 @@ public class Kata3 {
 		
 		return roboFlyDoc;
 		
+	}
+	
+	private DBObject convertProfile2Document(Profile profile) {
+		
+		DBObject profileDoc = new BasicDBObject();
+		profileDoc.put("_id", profile.getId());
+		profileDoc.put("type", profile.getRoboflyType().name);
+		profileDoc.put("size", profile.getSize());
+		profileDoc.put("serviceTime", profile.getServiceTime());
+
+		return profileDoc;
+		
+	}
+	
+	private Profile convertDocument2Profile(DBObject document) {
+		
+		Profile profile = new Profile();
+		profile.setId(String.valueOf(document.get("_id")));
+		profile.setRoboflyType(Type.valueOf(String.valueOf(document.get("type"))));
+		profile.setSize((Integer)document.get("size"));
+		profile.setServiceTime((Integer)document.get("serviceTime"));
+		return profile;
 	}
 	
 	/**
@@ -239,7 +358,7 @@ public class Kata3 {
 										.size(copepodSize)
 										.serviceTime(copepodServiceTime)
 										.status(RoboFly.Status.OK)
-										.type(RoboFly.Type.CAPEPOD)
+										.type(RoboFly.Type.COPEPOD)
 										.build();
 		
 		roboFlyBuilder = new RoboFly.Builder("RoboFly_ID_9", "Harpa");
@@ -247,7 +366,7 @@ public class Kata3 {
 										.size(copepodSize)
 										.serviceTime(copepodServiceTime)
 										.status(RoboFly.Status.OK)
-										.type(RoboFly.Type.CAPEPOD)
+										.type(RoboFly.Type.COPEPOD)
 										.build();
 		
 		roboFlies.add(dragonFly1);

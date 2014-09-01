@@ -115,7 +115,7 @@ class RoboFly {
 		FLY("FLY"),
 		MOSKITO("MOSKITO"),
 		DRAGONFLY("DRAGONFLY"),
-		CAPEPOD("CAPEPOD");
+		COPEPOD("COPEPOD");
 		
 		String name;
 		

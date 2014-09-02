@@ -184,12 +184,13 @@ public class Kata3 {
 	
 		DBCursor roboFliesCursor = collection.find();
 		while(roboFliesCursor.hasNext()) {
-			DBObject updateDocument = roboFliesCursor.next();
+			DBObject currentDocument = roboFliesCursor.next();
+			DBObject updateDocument = currentDocument;
 			updateDocument.removeField("type");
 			updateDocument.removeField("size");
 			updateDocument.removeField("serviceTime");
 			
-			collection.update(new BasicDBObject(), updateDocument);
+			collection.update(currentDocument, updateDocument);
 		}		
 	}
 	

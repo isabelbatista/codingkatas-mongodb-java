@@ -24,7 +24,7 @@ public class TestKata3dot2 {
 	
 	@After
 	public void tearDown() {
-		
+		kata.dropDatabase();
 	}
 	
 	@Test
@@ -37,16 +37,18 @@ public class TestKata3dot2 {
 		List<Profile> profiles = kata.getProfiles();
 		List<RoboFly> roboFlies = kata.getRoboFlies();
 		
+		// expect 4 new profiles
 		Assert.assertNotNull(profiles);
 		Assert.assertEquals(4, profiles.size());
 		
-		System.out.println("Roboflies: " + roboFlies.get(0).getServiceTime());
-		Assert.assertNull(roboFlies.get(0).getSize());
-		Assert.assertNull(roboFlies.get(0).getType());
-		Assert.assertNull(roboFlies.get(0).getServiceTime());		
+		// expect fields type, size and service time are not set in roboflies any more
+		for(RoboFly roboFly : roboFlies) {
+			Assert.assertNull(roboFly.getSize());
+			Assert.assertNull(roboFly.getType());
+			Assert.assertNull(roboFly.getServiceTime());
+		}
 	}
 	
-	// FIXME: RoboFly 1 is not stored completely
 	private List<RoboFly> createDummyRoboFlies() {
 		
 		List<RoboFly> roboFlies = new ArrayList<RoboFly>();

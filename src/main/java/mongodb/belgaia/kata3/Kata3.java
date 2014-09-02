@@ -55,6 +55,13 @@ public class Kata3 {
 		
 	}
 	
+	public void startKata3dot2() throws CollectionDoesNotExistExc {
+		
+		System.out.println("Extract information of type, size and service time from roboflies and put them to profiles.");
+		refactorDatabase(ROBOFLIES_COLLECTION_NAME, PROFILES_COLLECTION_NAME);
+		
+	}
+	
 	
 	/**
 	 * Saves a list of robotic flies and returns the initial IDs of these flies

@@ -2,6 +2,7 @@ package mongodb.belgaia;
 
 import mongodb.belgaia.kata1.Kata1;
 import mongodb.belgaia.kata2.Kata2;
+import mongodb.belgaia.kata3.CollectionDoesNotExistExc;
 import mongodb.belgaia.kata3.Kata3;
 
 /**
@@ -48,21 +49,27 @@ public class ExecutorOfAllKatas {
 		kataSolution.startKata2dot2(DATABASE_NAME);
 	}
 	
-	private void startKataThree() {
+	private void startKataThree() throws CollectionDoesNotExistExc {
 		
 		System.out.println("Executing Kata 3");
 		System.out.println("##################");
 		
 		Kata3 kataSolution = new Kata3(DATABASE_NAME);
-		kataSolution.startKata3();		
+		kataSolution.startKata3();
+		kataSolution.startKata3dot2(); // FIXME: Does not work properly (removes fields only from the first document)
+		
 	}
 	
 	public static final void main (String[] args) {
 		
-		ExecutorOfAllKatas executor = new ExecutorOfAllKatas();
-		executor.startKataOne();
-		executor.startKataTwo();
-		executor.startKataThree();
+		try {
+			ExecutorOfAllKatas executor = new ExecutorOfAllKatas();
+			executor.startKataOne();
+			executor.startKataTwo();
+			executor.startKataThree();
+		} catch (CollectionDoesNotExistExc e) {
+			e.printStackTrace();
+		}
 		
 		System.out.println("##################");
 		System.out.println("Executed all Katas");

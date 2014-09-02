@@ -7,8 +7,8 @@ class RoboFly {
 	private final String name;
 	
 	private final int constructionYear;
-	private final int size;				// in millimeters
-	private final int serviceTime;		// maximum in minutes
+	private final Integer size;				// in millimeters
+	private final Integer serviceTime;		// maximum in minutes
 	private final Status status;
 	private final Type type;
 	
@@ -35,11 +35,11 @@ class RoboFly {
 		return constructionYear;
 	}
 
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
-	public int getServiceTime() {
+	public Integer getServiceTime() {
 		return serviceTime;
 	}
 
@@ -57,8 +57,8 @@ class RoboFly {
 		private final String name;
 		
 		private int constructionYear;
-		private int size;
-		private int serviceTime;
+		private Integer size;
+		private Integer serviceTime;
 		private Status status;
 		private Type type;		
 		
@@ -73,12 +73,12 @@ class RoboFly {
 			return this;
 		}
 		
-		public Builder size(int size) {
+		public Builder size(Integer size) {
 			this.size = size;
 			return this;
 		}
 		
-		public Builder serviceTime(int serviceTime) {
+		public Builder serviceTime(Integer serviceTime) {
 			this.serviceTime = serviceTime;
 			return this;
 		}

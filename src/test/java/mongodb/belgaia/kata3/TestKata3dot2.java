@@ -40,6 +40,7 @@ public class TestKata3dot2 {
 		Assert.assertNotNull(profiles);
 		Assert.assertEquals(4, profiles.size());
 		
+		System.out.println("Roboflies: " + roboFlies.get(0).getServiceTime());
 		Assert.assertNull(roboFlies.get(0).getSize());
 		Assert.assertNull(roboFlies.get(0).getType());
 		Assert.assertNull(roboFlies.get(0).getServiceTime());		

@@ -123,11 +123,10 @@ public class Kata3 {
 		database.dropDatabase();
 	}
 	
-	public List<Profile> refactorDatabase(String sourceCollection, String targetCollection) throws CollectionDoesNotExistExc {
+	public void refactorDatabase(String sourceCollection, String targetCollection) throws CollectionDoesNotExistExc {
 		
 		extractFieldsToProfile(sourceCollection, targetCollection);
 		removeFieldsFromCollection(sourceCollection);
-		return null;
 	}
 	
 	/**
@@ -182,26 +181,16 @@ public class Kata3 {
 		
 		// remove fields "type", "size" and "serviceTime"
 		DBCollection collection = database.getCollection(sourceCollection);
-		
-		BasicDBObject update = new BasicDBObject();
-		update.remove("type");
-		update.remove("size");
-		update.remove("serviceTime");
-		collection.update(new BasicDBObject(), update);
-		
-		
-		
-		
-		
-//		DBCursor roboFliesCursor = collection.find();
-//		while(roboFliesCursor.hasNext()) {
-//			DBObject document = roboFliesCursor.next();
-//			document.removeField("type");
-//			document.removeField("size");
-//			document.removeField("serviceTime");
-//			
-//			collection.update(new BasicDBObject(), document);
-//		}		
+	
+		DBCursor roboFliesCursor = collection.find();
+		while(roboFliesCursor.hasNext()) {
+			DBObject updateDocument = roboFliesCursor.next();
+			updateDocument.removeField("type");
+			updateDocument.removeField("size");
+			updateDocument.removeField("serviceTime");
+			
+			collection.update(new BasicDBObject(), updateDocument);
+		}		
 	}
 	
 	public List<Profile> getProfiles() {
@@ -292,18 +281,25 @@ public class Kata3 {
 		RoboFly.Status roboFlyStatus = RoboFly.Status.valueOf(roboFlyDocStatus);
 		
 		String roboFlyDocType = document.get("type") != null ? document.get("type").toString() : null;
-		RoboFly.Type roboFlyType = RoboFly.Type.valueOf(roboFlyDocType);
 		
+		roboFlyBuilder
+				.constructionYear((Integer) document.get("constructionYear"))
+				.status(roboFlyStatus);
 		
-		RoboFly roboFly = roboFlyBuilder
-									.constructionYear((Integer) document.get("constructionYear"))
-									.size((Integer) document.get("size"))
-									.serviceTime((Integer) document.get("serviceTime"))
-									.status(roboFlyStatus)
-									.type(roboFlyType)
-									.build();
+		if(roboFlyDocType != null) {
+			RoboFly.Type roboFlyType = RoboFly.Type.valueOf(roboFlyDocType);
+			roboFlyBuilder.type(roboFlyType);
+		}
 		
-		return roboFly;
+		if(document.get("size") != null) {
+			roboFlyBuilder.size((Integer) document.get("size"));
+		}
+		
+		if(document.get("serviceTime") != null) {
+			roboFlyBuilder.serviceTime((Integer) document.get("serviceTime"));
+		}
+		
+		return roboFlyBuilder.build();
 	}	
 	
 	private List<RoboFly> getRoboFlyList() {

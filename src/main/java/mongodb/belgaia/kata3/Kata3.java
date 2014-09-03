@@ -12,6 +12,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import com.mongodb.WriteResult;
 
 
 public class Kata3 {
@@ -189,16 +190,9 @@ public class Kata3 {
 		// remove fields "type", "size" and "serviceTime"
 		DBCollection collection = database.getCollection(sourceCollection);
 	
-		DBCursor roboFliesCursor = collection.find();
-		while(roboFliesCursor.hasNext()) {
-			DBObject currentDocument = roboFliesCursor.next();
-			DBObject updateDocument = currentDocument;
-			updateDocument.removeField("type");
-			updateDocument.removeField("size");
-			updateDocument.removeField("serviceTime");
-			
-			collection.update(currentDocument, updateDocument);
-		}		
+		DBObject removeFields = new BasicDBObject().append("size", 1).append("type", 1).append("serviceTime", 1);
+
+		collection.update(new BasicDBObject(), new BasicDBObject("$unset", removeFields), false, true); 
 	}
 	
 	public List<Profile> getProfiles() {

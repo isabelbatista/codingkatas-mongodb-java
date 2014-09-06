@@ -80,7 +80,15 @@ public class TestMongoAggregator {
 		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(0).get("_id"));
 	}
 	
-	
+	@Test
+	public void shouldReturnRoboFlyWithWrongCO2Content() {
+		
+		List<DBObject> roboFlies = aggregator.findRoboFliesWithWrongDoubleValues(MongoAggregator.FIELD_CO_CONTENT);
+		
+		Assert.assertEquals(1, roboFlies.size());
+		Assert.assertEquals("RoboFly_ID_1", roboFlies.get(0).get("_id"));
+		
+	}
 	
 	private void createInitialRoboFlies() {
 		
@@ -118,29 +126,29 @@ public class TestMongoAggregator {
 					.append("roboFlyID", "RoboFly_ID_1")
 					.append("humidity", 20.01)
 					.append("airPressure", 1013.25)
-					.append("luminosity", 600)
-					.append("soundIntensity", 55)
-					.append("temperature", 17)
-					.append("co2Content", 2.17); // shows difference -- very high value
+					.append("luminosity", 600.0)
+					.append("soundIntensity", 55.0)
+					.append("temperature", 17.0)
+					.append("co2Content", 4.17); // shows difference -- very high value
 		
 		DBObject measurement2 = new BasicDBObject("_id", "measurement_average_2")
 					.append("timestamp", System.currentTimeMillis())
 					.append("roboFlyID", "RoboFly_ID_2")
 					.append("humidity", 20.01)
 					.append("airPressure", 1013.25)
-					.append("luminosity", 600)
-					.append("soundIntensity", 0)		// shows difference -- no value
-					.append("temperature", 17)
-					.append("co2Content", 0.04);		
+					.append("luminosity", 600.0)
+					.append("soundIntensity", 0.0)		// shows difference -- no value
+					.append("temperature", 17.0)
+					.append("co2Content", 0.4);		
 			
 		DBObject measurement3 = new BasicDBObject("_id", "measurement_average_3")
 					.append("timestamp", System.currentTimeMillis())
 					.append("roboFlyID", "RoboFly_ID_2")
 					.append("humidity", 20.01)
 					.append("airPressure", 1013.25)
-					.append("luminosity", 600)
-					.append("soundIntensity", 57)
-					.append("temperature", 17)
+					.append("luminosity", 600.0)
+					.append("soundIntensity", 57.0)
+					.append("temperature", 17.0)
 					.append("co2Content", 0.5);
 	
 		

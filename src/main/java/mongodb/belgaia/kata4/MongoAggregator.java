@@ -17,9 +17,16 @@ import com.mongodb.Mongo;
 
 public class MongoAggregator {
 
+	public static final String FIELD_CO_CONTENT = "co2Content";
+	public static final String FIELD_SOUND_INTENSITY = "soundIntensity";
+	
 	private static final String DATABASE_NAME = "mobilerobotics";
 	
 	private static final Double TOLERANCE_AVG_SOUND_INTENSITY = new Double(20.00);
+	private static final Double TOLERANCE_AVG_CO2_CONTENT = new Double(1.00);
+	
+	
+	
 	private Mongo client;
 	private DB database;
 	
@@ -64,7 +71,6 @@ public class MongoAggregator {
 	
 	public List<DBObject> findRoboFliesWithWrongSoundIntensity() {
 		
-		// group by roboFly // average of soundIntensity
 		List<DBObject> roboFliesAverage = calculateAverage("roboFlyID", "soundIntensity");
 		
 		Double soundIntensityAvg = new Double(0.0);
@@ -72,27 +78,27 @@ public class MongoAggregator {
 			soundIntensityAvg += (Double)roboFlyAvg.get("average");
 		}
 		
-		System.out.println("Average so far: " + soundIntensityAvg / roboFliesAverage.size());
+		Double average = soundIntensityAvg / roboFliesAverage.size();
+		System.out.println("Average so far: " + average);
 
-		return checkRoboFliesAgainstAverage(soundIntensityAvg/roboFliesAverage.size());
+		return checkRoboFliesAgainstAverage("soundIntensity", average, average-TOLERANCE_AVG_SOUND_INTENSITY, average+TOLERANCE_AVG_SOUND_INTENSITY);
 	}
 	
-	private List<DBObject> checkRoboFliesAgainstAverage(Double average) {
+	private List<DBObject> checkRoboFliesAgainstAverage(String fieldName, Double average, Double toleranceMin, Double toleranceMax) {
 		
 		DBCursor measurements = measurementCollection.find();
 		
-		Double minValue = average - TOLERANCE_AVG_SOUND_INTENSITY;
-		Double maxValue = average + TOLERANCE_AVG_SOUND_INTENSITY;
+
 		
 		List<DBObject> wrongRoboFlies = new ArrayList<DBObject>();
 		while(measurements.hasNext()) {
 			DBObject measurementDoc = measurements.next();
 						
-			Integer avg = (Integer) measurementDoc.get("soundIntensity");
-			if((avg >= minValue) && (avg <= maxValue)) {
-				System.out.println("The value " + avg + " lies in the average range of " + minValue + "-" + maxValue);
+			Double avg = (Double) measurementDoc.get(fieldName);
+			if((avg >= toleranceMin) && (avg <= toleranceMax)) {
+				System.out.println("The value " + avg + " lies in the average range of " + toleranceMin + "-" + toleranceMax);
 			} else {
-				System.out.println("This value is not in the expected average range: " + avg + ". The average range is " + minValue + "-" + maxValue);
+				System.out.println("This value is not in the expected average range: " + avg + ". The average range is " + toleranceMin + "-" + toleranceMax);
 				
 				DBObject roboFlyByFailingMeasurement = new BasicDBObject();
 				roboFlyByFailingMeasurement.put("_id", measurementDoc.get("roboFlyID"));
@@ -108,7 +114,7 @@ public class MongoAggregator {
 	public List<DBObject> calculateAverage(String groupingFieldName, String averageFieldName) {
 		
 		DBObject average = new BasicDBObject();
-		average.put("average", new BasicDBObject("$avg", "$soundIntensity"));
+		average.put("average", new BasicDBObject("$avg", "$" + averageFieldName));
 		
 		if(groupingFieldName != null) {
 			average.put("_id", "$" + groupingFieldName);
@@ -148,6 +154,21 @@ public class MongoAggregator {
 		
 		roboFlyCollection = database.getCollection("roboflies");
 		measurementCollection = database.getCollection("measurements");
+	}
+
+	public List<DBObject> findRoboFliesWithWrongDoubleValues(String fieldName) {
+		
+		List<DBObject> roboFliesAverage = calculateAverage("roboFlyID", fieldName);
+		
+		Double averageValue = new Double(0.0);
+		for(DBObject roboFlyAvg : roboFliesAverage) {
+			averageValue += (Double)roboFlyAvg.get("average");
+		}
+		
+		Double average = averageValue / roboFliesAverage.size();
+		System.out.println("Average so far: " + average);
+
+		return checkRoboFliesAgainstAverage("co2Content", average, average-TOLERANCE_AVG_CO2_CONTENT, average + TOLERANCE_AVG_CO2_CONTENT);
 	}
 
 }

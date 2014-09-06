@@ -4,10 +4,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mongodb.belgaia.kata1.RoboFliesPersistence;
+
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
@@ -15,6 +18,8 @@ import com.mongodb.Mongo;
 public class MongoAggregator {
 
 	private static final String DATABASE_NAME = "mobilerobotics";
+	
+	private static final Double TOLERANCE_AVG_SOUND_INTENSITY = new Double(20.00);
 	private Mongo client;
 	private DB database;
 	
@@ -57,12 +62,48 @@ public class MongoAggregator {
 		measurementCollection.insert(measurements);
 	}
 	
-	public RoboFly findRoboFlyWithWrongSoundIntensity() {
+	public List<DBObject> findRoboFliesWithWrongSoundIntensity() {
 		
 		// group by roboFly // average of soundIntensity
-		calculateAverage("roboFlyID", "soundIntensity");
-		return null;
+		List<DBObject> roboFliesAverage = calculateAverage("roboFlyID", "soundIntensity");
+		
+		Double soundIntensityAvg = new Double(0.0);
+		for(DBObject roboFlyAvg : roboFliesAverage) {
+			soundIntensityAvg += (Double)roboFlyAvg.get("average");
+		}
+		
+		System.out.println("Average so far: " + soundIntensityAvg / roboFliesAverage.size());
+
+		return checkRoboFliesAgainstAverage(soundIntensityAvg/roboFliesAverage.size());
 	}
+	
+	private List<DBObject> checkRoboFliesAgainstAverage(Double average) {
+		
+		DBCursor measurements = measurementCollection.find();
+		
+		Double minValue = average - TOLERANCE_AVG_SOUND_INTENSITY;
+		Double maxValue = average + TOLERANCE_AVG_SOUND_INTENSITY;
+		
+		List<DBObject> wrongRoboFlies = new ArrayList<DBObject>();
+		while(measurements.hasNext()) {
+			DBObject measurementDoc = measurements.next();
+						
+			Integer avg = (Integer) measurementDoc.get("soundIntensity");
+			if((avg >= minValue) && (avg <= maxValue)) {
+				System.out.println("The value " + avg + " lies in the average range of " + minValue + "-" + maxValue);
+			} else {
+				System.out.println("This value is not in the expected average range: " + avg + ". The average range is " + minValue + "-" + maxValue);
+				
+				DBObject roboFlyByFailingMeasurement = new BasicDBObject();
+				roboFlyByFailingMeasurement.put("_id", measurementDoc.get("roboFlyID"));
+				
+				DBCursor roboFlyResult = roboFlyCollection.find(roboFlyByFailingMeasurement);
+				wrongRoboFlies.addAll(roboFlyResult.toArray());
+			}			
+		}
+		return wrongRoboFlies;		
+	}
+	
 	
 	public List<DBObject> calculateAverage(String groupingFieldName, String averageFieldName) {
 		
@@ -86,12 +127,6 @@ public class MongoAggregator {
 		return documentResults;
 
 	}
-	
-//	private DBObject addAverage() {
-//		
-//		DBObject average = new BasicDBObject("_id", "$roboFlyID").append("average", new BasicDBObject("$avg", "$soundIntensity"));
-//		return new BasicDBObject("$group", average);
-//	}
 		
 	private DBObject addProjection() {
 		

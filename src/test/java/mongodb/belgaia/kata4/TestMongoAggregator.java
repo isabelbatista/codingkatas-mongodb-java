@@ -71,6 +71,17 @@ public class TestMongoAggregator {
 		}		
 	}
 	
+	@Test
+	public void shouldReturnRoboFlyWithWrongSoundIntensity() {
+		
+		List<DBObject> roboFlies = aggregator.findRoboFliesWithWrongSoundIntensity();
+		
+		Assert.assertEquals(1, roboFlies.size());
+		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(0).get("_id"));
+	}
+	
+	
+	
 	private void createInitialRoboFlies() {
 		
 		List<DBObject> roboFlies = new ArrayList<DBObject>();
@@ -110,7 +121,7 @@ public class TestMongoAggregator {
 					.append("luminosity", 600)
 					.append("soundIntensity", 55)
 					.append("temperature", 17)
-					.append("co2Content", 0.04);
+					.append("co2Content", 2.17); // shows difference -- very high value
 		
 		DBObject measurement2 = new BasicDBObject("_id", "measurement_average_2")
 					.append("timestamp", System.currentTimeMillis())
@@ -120,7 +131,7 @@ public class TestMongoAggregator {
 					.append("luminosity", 600)
 					.append("soundIntensity", 0)		// shows difference -- no value
 					.append("temperature", 17)
-					.append("co2Content", 2.17);		// shows difference -- very high value
+					.append("co2Content", 0.04);		
 			
 		DBObject measurement3 = new BasicDBObject("_id", "measurement_average_3")
 					.append("timestamp", System.currentTimeMillis())

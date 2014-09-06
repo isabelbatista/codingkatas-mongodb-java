@@ -1,5 +1,7 @@
 package mongodb.belgaia.kata4;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -25,17 +27,48 @@ public class TestMongoAggregator {
 		createInitialMeasurements();
 	}
 	
+//	@Test
+//	public void shouldReturnRoboFlyWhereSoundIntensityIsTooLow() {
+//		
+//		RoboFly roboFlyToBeCalibrated = aggregator.findRoboFlyWithWrongSoundIntensity();
+//		
+//		
+//		
+//		
+//		String expectedRoboFlyId = "RoboFly_ID_2";
+//		
+//		
+//	}
+	
 	@Test
-	public void shouldReturnRoboFlyWhereSoundIntensityIsTooLow() {
+	public void shouldReturnAverageOfAllMeasurements() {
 		
-		RoboFly roboFlyToBeCalibrated = aggregator.findRoboFlyWithWrongSoundIntensity();
+		List<DBObject> result = aggregator.calculateAverage(null, "soundIntensity");
 		
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(37.333333333333336, result.get(0).get("average"));
 		
+	}
+	
+	@Test
+	public void shouldReturnAverageOfMeasurementsGroupedByRoboFly() {
 		
+		List<DBObject> results = aggregator.calculateAverage("roboFlyID", "soundIntensity");
 		
-		String expectedRoboFlyId = "RoboFly_ID_2";
+		Assert.assertEquals(2, results.size());
 		
-		
+		for(DBObject result : results) {
+			
+			String roboFlyID = String.valueOf(result.get("_id"));
+			
+			if(roboFlyID.equals("RoboFly_ID_1")) {
+				Assert.assertEquals(55.0, result.get("average"));
+			} else if (roboFlyID.equals("RoboFly_ID_2")) {
+				Assert.assertEquals(28.5, result.get("average"));
+			} else {
+				fail();
+			}
+		}		
 	}
 	
 	private void createInitialRoboFlies() {

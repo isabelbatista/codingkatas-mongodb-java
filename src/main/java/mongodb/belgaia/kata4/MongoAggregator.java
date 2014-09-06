@@ -1,15 +1,13 @@
 package mongodb.belgaia.kata4;
 
 import java.net.UnknownHostException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
@@ -62,31 +60,38 @@ public class MongoAggregator {
 	public RoboFly findRoboFlyWithWrongSoundIntensity() {
 		
 		// group by roboFly // average of soundIntensity
-		calcAverage();
+		calculateAverage("roboFlyID", "soundIntensity");
 		return null;
 	}
 	
-	private void calcAverage() {
+	public List<DBObject> calculateAverage(String groupingFieldName, String averageFieldName) {
 		
-		DBObject average = addAverage();
+		DBObject average = new BasicDBObject();
+		average.put("average", new BasicDBObject("$avg", "$soundIntensity"));
 		
-		AggregationOutput output = measurementCollection.aggregate(average);
+		if(groupingFieldName != null) {
+			average.put("_id", "$" + groupingFieldName);
+		} else {
+			average.put("_id", "allRoboFlies");
+		}
+		
+		AggregationOutput output = measurementCollection.aggregate(new BasicDBObject("$group", average));
+		
+		List<DBObject> documentResults = new ArrayList<DBObject>();
 		for(DBObject result : output.results()) {
+			documentResults.add(result);
 			System.out.println("Output: " + result);
 		}
+		
+		return documentResults;
 
 	}
 	
-	private DBObject addAverage() {
-		
-		// calculates the average of documents of each robofly separately
-//		DBObject groupFields = new BasicDBObject( "_id", "$roboFlyID");
-//		groupFields.put("average", new BasicDBObject( "$avg", "$soundIntensity"));
-		
-		// calculates the average of all documents of the collection
-		DBObject average = new BasicDBObject("_id", "$roboFlyID").append("average", new BasicDBObject("$avg", "$soundIntensity"));
-		return new BasicDBObject("$group", average);
-	}
+//	private DBObject addAverage() {
+//		
+//		DBObject average = new BasicDBObject("_id", "$roboFlyID").append("average", new BasicDBObject("$avg", "$soundIntensity"));
+//		return new BasicDBObject("$group", average);
+//	}
 		
 	private DBObject addProjection() {
 		

@@ -1,10 +1,10 @@
 package mongodb.belgaia.kata4;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
+
+import mongodb.belgaia.kata4.MongoAggregator;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,80 +15,34 @@ import com.mongodb.DBObject;
 
 public class TestMongoAggregator {
 	
-	private static final String DATABASE_NAME = "testmongodbkatas";
+	private static final String DATABASE_NAME = "test";
 	private MongoAggregator aggregator;
-	
 	
 	@Before
 	public void setUp() {
-		
 		aggregator = new MongoAggregator(DATABASE_NAME);
 		createInitialRoboFlies();
 		createInitialMeasurements();
 	}
 	
-//	@Test
-//	public void shouldReturnRoboFlyWhereSoundIntensityIsTooLow() {
-//		
-//		RoboFly roboFlyToBeCalibrated = aggregator.findRoboFlyWithWrongSoundIntensity();
-//		
-//		
-//		
-//		
-//		String expectedRoboFlyId = "RoboFly_ID_2";
-//		
-//		
-//	}
-	
 	@Test
-	public void shouldReturnAverageOfAllMeasurements() {
+	public void shouldReturnBadValueRoboFlies() {
 		
-		List<DBObject> result = aggregator.calculateAverage(null, "soundIntensity");
+		Set<String> roboFlyIds = aggregator.findBadValues();
 		
-		Assert.assertEquals(1, result.size());
-		Assert.assertEquals(37.333333333333336, result.get(0).get("average"));
-		
+		// 1, 2, 4
+		Assert.assertEquals(2, roboFlyIds.size());
+		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_1"));
+		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_2"));
 	}
 	
 	@Test
-	public void shouldReturnAverageOfMeasurementsGroupedByRoboFly() {
+	public void shouldCalculateAverageOfSoundIntensity() {
 		
-		List<DBObject> results = aggregator.calculateAverage("roboFlyID", "soundIntensity");
-		
-		Assert.assertEquals(2, results.size());
-		
-		for(DBObject result : results) {
-			
-			String roboFlyID = String.valueOf(result.get("_id"));
-			
-			if(roboFlyID.equals("RoboFly_ID_1")) {
-				Assert.assertEquals(55.0, result.get("average"));
-			} else if (roboFlyID.equals("RoboFly_ID_2")) {
-				Assert.assertEquals(28.5, result.get("average"));
-			} else {
-				fail();
-			}
-		}		
-	}
-	
-	@Test
-	public void shouldReturnRoboFlyWithWrongSoundIntensity() {
-		
-		List<DBObject> roboFlies = aggregator.findRoboFliesWithWrongSoundIntensity();
-		
-		Assert.assertEquals(1, roboFlies.size());
-		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(0).get("_id"));
-	}
-	
-	@Test
-	public void shouldReturnRoboFlyWithWrongCO2Content() {
-		
-		List<DBObject> roboFlies = aggregator.findRoboFliesWithWrongDoubleValues(MongoAggregator.FIELD_CO_CONTENT);
-		
-		Assert.assertEquals(1, roboFlies.size());
-		Assert.assertEquals("RoboFly_ID_1", roboFlies.get(0).get("_id"));
-		
-	}
+		List<DBObject> averages = aggregator.calculateAverage("soundIntensity");
+		Assert.assertEquals(1, averages.size());
+		Assert.assertEquals(55.333333333333336, averages.get(0).get("average"));
+	}	
 	
 	private void createInitialRoboFlies() {
 		
@@ -129,7 +83,7 @@ public class TestMongoAggregator {
 					.append("luminosity", 600.0)
 					.append("soundIntensity", 55.0)
 					.append("temperature", 17.0)
-					.append("co2Content", 4.17); // shows difference -- very high value
+					.append("co2Content", 0.00); // no value
 		
 		DBObject measurement2 = new BasicDBObject("_id", "measurement_average_2")
 					.append("timestamp", System.currentTimeMillis())
@@ -137,28 +91,39 @@ public class TestMongoAggregator {
 					.append("humidity", 20.01)
 					.append("airPressure", 1013.25)
 					.append("luminosity", 600.0)
-					.append("soundIntensity", 0.0)		// shows difference -- no value
+					.append("soundIntensity", 0.0)		// no value
 					.append("temperature", 17.0)
 					.append("co2Content", 0.4);		
 			
 		DBObject measurement3 = new BasicDBObject("_id", "measurement_average_3")
 					.append("timestamp", System.currentTimeMillis())
-					.append("roboFlyID", "RoboFly_ID_2")
+					.append("roboFlyID", "RoboFly_ID_3")
 					.append("humidity", 20.01)
 					.append("airPressure", 1013.25)
 					.append("luminosity", 600.0)
 					.append("soundIntensity", 57.0)
 					.append("temperature", 17.0)
 					.append("co2Content", 0.5);
-	
+		
+		DBObject measurement4 = new BasicDBObject("_id", "measurement_average_4")
+					.append("timestamp", System.currentTimeMillis())
+					.append("roboFlyID", "RoboFly_ID_1")
+					.append("humidity", 0.00) // no value
+					.append("airPressure", 1013.25)
+					.append("luminosity", 600.0)
+					.append("soundIntensity", 54.0)
+					.append("temperature", 17.0)
+					.append("co2Content", 4.17); 
 		
 		aggregator.createDocumentReference("RoboFly_ID_1", measurement1);
+		aggregator.createDocumentReference("RoboFly_ID_1", measurement4);
 		aggregator.createDocumentReference("RoboFly_ID_2", measurement2);
 		aggregator.createDocumentReference("RoboFly_ID_2", measurement3);
 		
 		measurements.add(measurement1);
 		measurements.add(measurement2);
 		measurements.add(measurement3);
+		measurements.add(measurement4);
 		
 		aggregator.saveMeasurements(measurements);
 	}

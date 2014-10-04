@@ -18,19 +18,12 @@ import com.mongodb.DBObject;
 public class RoboFly2DocumentConverter {
 	
 	public static DBObject convertRoboFly2Document(RoboFly roboFly) {
-		
-		DBObject document = new BasicDBObject("name", roboFly.getName())
+		return new BasicDBObject("name", roboFly.getName())
 									.append("_id", roboFly.getId())
 									.append("constructionYear", roboFly.getConstructionYear())
 									.append("size", roboFly.getSize())
 									.append("serviceTime", roboFly.serviceTime)
 									.append("status", roboFly.getStatus().name);
-		
-//		if (roboFly.getId() != null) {
-//			document.put("_id", roboFly.getId());
-//		}
-		
-		return document;
 	}
 	
 	public static Map<String, DBObject> convertRoboFlies2Documents(Map<String, RoboFly> roboFlies) {

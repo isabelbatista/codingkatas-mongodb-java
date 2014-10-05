@@ -26,10 +26,10 @@ public class TestKata5 {
 		createInitialMeasurements();
 	}
 	
-	@After
-	public void tearDown() {
-		kata.dropDatabase();
-	}
+//	@After
+//	public void tearDown() {
+//		kata.dropDatabase();
+//	}
 	
 	@Test
 	public void shouldChangeStatusOfDamagedRobofly() {
@@ -43,11 +43,55 @@ public class TestKata5 {
 	@Test
 	public void shouldAddMoreInformationToDamagedFlies() {
 		
-		Map<String, String> additionalInfo = new HashMap<String, String>();
-		additionalInfo.put("statusDescription", StatusDescription.DAMAGED.name());
-		additionalInfo.put("comment", "Zerstoert durch Garten-geraet");
-		additionalInfo.put("endOfLife", "30.04.14");
+		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.DAMAGED);
 		kata.addMoreInformation("RoboFly_ID_2", additionalInfo);
+		
+		DBObject roboFly = kata.getRoboFly("RoboFly_ID_2");
+		Assert.assertEquals(StatusDescription.DAMAGED.name(), (String)roboFly.get("statusDescription"));
+	}
+	
+	@Test
+	public void shouldSetEnergyShieldAtEatenRoboFlyTypes() {
+		
+		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.EATEN);
+		kata.addMoreInformation("RoboFly_ID_2", additionalInfo);
+		
+		kata.setEnergyShieldAtRoboFly();		
+		DBObject roboFly = kata.getRoboFly("RoboFly_ID_2");
+		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_1");
+		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_3");
+		
+		Assert.assertEquals(Equipment.ENERGY_SHIELD.name(), roboFly.get("equipment"));
+		Assert.assertEquals(Equipment.ENERGY_SHIELD.name(), roboFlyOfSameType.get("equipment"));
+		Assert.assertNull(roboFlyWithDifferentType.get("equipment"));
+	}
+	
+	@Test
+	public void shouldSetGPSAtMissedRoboFlyTypes() {
+		
+		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.LOST);
+		kata.addMoreInformation("RoboFly_ID_2", additionalInfo);
+		
+		kata.setGPSAtRoboFly();		
+		DBObject roboFly = kata.getRoboFly("RoboFly_ID_2");
+		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_1");
+		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_3");
+		
+		Assert.assertEquals(Equipment.GPS.name(), roboFly.get("equipment"));
+		Assert.assertEquals(Equipment.GPS.name(), roboFlyOfSameType.get("equipment"));
+		Assert.assertNull(roboFlyWithDifferentType.get("equipment"));
+
+	}
+	
+	private Map<String, String> createDummyAdditionalInformation(StatusDescription statusDesc) {
+		
+		String statusDescKey = "statusDescription";
+		Map<String, String> additionalInfo = new HashMap<String, String>();
+		additionalInfo.put(statusDescKey, statusDesc.name());
+		additionalInfo.put("comment", "Dummy Text");
+		additionalInfo.put("endOfLife", "30.04.14");
+		
+		return additionalInfo;		
 	}
 	
 	private void createInitialRoboFlies() {
@@ -55,24 +99,33 @@ public class TestKata5 {
 		List<DBObject> roboFlies = new ArrayList<DBObject>();
 
 		DBObject roboFly1 = new BasicDBObject("name", "Calliphora")
+										.append("type", RoboFlyType.FLY.name)
 										.append("_id", "RoboFly_ID_1")
 										.append("constructionYear", 2014)
 										.append("status", "OK");
 		
 		DBObject roboFly2 = new BasicDBObject("name", "Lucilia")
+										.append("type", RoboFlyType.FLY.name)
 										.append("_id", "RoboFly_ID_2")
 										.append("constructionYear", 2014)
 										.append("status", "OK");
 
-		DBObject roboFly3 = new BasicDBObject("name", "Onesia")
+		DBObject roboFly3 = new BasicDBObject("name", "Ischnura")
+										.append("type", RoboFlyType.DRAGONFLY.name)
 										.append("_id", "RoboFly_ID_3")
+										.append("constructionYear", 2014)
+										.append("status", "OK");
+		
+		DBObject roboFly4 = new BasicDBObject("name", "Calopteryx")
+										.append("type", RoboFlyType.DRAGONFLY.name)
+										.append("_id", "RoboFly_ID_4")
 										.append("constructionYear", 2014)
 										.append("status", "OK");
 		
 		roboFlies.add(roboFly1);
 		roboFlies.add(roboFly2);
 		roboFlies.add(roboFly3);
-		
+		roboFlies.add(roboFly4);
 		kata.saveRoboflies(roboFlies);
 	}
 

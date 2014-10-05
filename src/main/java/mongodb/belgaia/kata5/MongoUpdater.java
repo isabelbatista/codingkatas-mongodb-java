@@ -9,11 +9,21 @@ import java.util.Map.Entry;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
 
+// FIXME: Does not update the equipment once set
 public class MongoUpdater {
+
+	private static final String STATUS_FIELD_NAME = "status";
+
+	private static final String ID_FIELD_NAME = "_id";
+
+	private static final String TYPE_FIELD_NAME = "type";
+
+	private static final String STATUS_DESCRIPTION_FIELD_NAME = "statusDescription";
 
 	private static final String DATABASE_NAME = "mobilerobotics";
 
@@ -54,12 +64,20 @@ public class MongoUpdater {
 
 	public void changeStatus(String roboFlyId, RoboFlyStatus status) {
 
-		DBObject query = new BasicDBObject("_id", roboFlyId);
-		DBObject update = new BasicDBObject().append("$set", new BasicDBObject("status", status.name));
+		DBObject query = new BasicDBObject(ID_FIELD_NAME, roboFlyId);
+		DBObject update = new BasicDBObject().append("$set", new BasicDBObject(STATUS_FIELD_NAME, status.name));
 		
 		robofliesCollection.update(query, update);
 	}
 	
+	/**
+	 * Adds more information about the robofly status.
+	 * Additional information includes a description key of what happened to the robofly (if status is "OUT_OF_SERVICE),
+	 * a comment about what happened exactly and the service end date.
+	 * 
+	 * @param roboFlyId			The robot fly that gets the additional information.
+	 * @param additionalInfo	The information about the robot fly mapped in a HashMap<key, value>.
+	 */
 	public void addMoreInformation(String roboFlyId, Map<String, String> additionalInfo) {
 		
 		Iterator<Entry<String, String>> infoIterator = additionalInfo.entrySet().iterator();
@@ -68,10 +86,39 @@ public class MongoUpdater {
 			String key = entry.getKey();
 			String value = entry.getValue();
 			
-			DBObject query = new BasicDBObject("_id", roboFlyId);
+			DBObject query = new BasicDBObject(ID_FIELD_NAME, roboFlyId);
 			DBObject update = new BasicDBObject("$set", new BasicDBObject(key, value));
 			
 			robofliesCollection.update(query, update);
+		}
+	}
+	
+	public void setEnergyShieldAtRoboFly() {
+		setEquipmentAtRoboFly(StatusDescription.EATEN);
+	}
+	
+	public void setGPSAtRoboFly() {
+		setEquipmentAtRoboFly(StatusDescription.LOST);
+	}
+	
+	public void setEquipmentAtRoboFly(StatusDescription statusDesc) {
+		
+		Equipment equipment = null;
+		if(statusDesc.equals(StatusDescription.EATEN)) {
+			equipment = Equipment.ENERGY_SHIELD;
+		} else if (statusDesc.equals(StatusDescription.LOST)) {
+			equipment = Equipment.GPS;
+		} else {
+			throw new IllegalArgumentException("Unknown status description: " + statusDesc);
+		}
+		
+		DBObject findQuery = new BasicDBObject(STATUS_DESCRIPTION_FIELD_NAME, statusDesc.name());
+		DBCursor roboFlies = robofliesCollection.find(findQuery);
+		
+		while(roboFlies.hasNext()) {
+			DBObject roboFly = roboFlies.next();
+			DBObject updateQuery = new BasicDBObject(TYPE_FIELD_NAME, roboFly.get(TYPE_FIELD_NAME));
+			robofliesCollection.update(updateQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
 		}
 	}
 
@@ -97,6 +144,6 @@ public class MongoUpdater {
 	}
 
 	public DBObject getRoboFly(String roboFlyId) {
-		return robofliesCollection.findOne(new BasicDBObject("_id", roboFlyId));
+		return robofliesCollection.findOne(new BasicDBObject(ID_FIELD_NAME, roboFlyId));
 	}
 }

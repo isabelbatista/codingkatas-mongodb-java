@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import mongodb.belgaia.kata4.MongoAggregator;
+import mongodb.belgaia.kata4.RoboFlyStatus;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,6 +34,17 @@ public class TestMongoAggregator {
 		Assert.assertEquals(2, roboFlyIds.size());
 		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_1"));
 		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_2"));
+	}
+	
+	@Test
+	public void shouldSetStatusOfRoboFliesWithBadValuesToBeCalibrated() {
+		
+		aggregator.markRoboFliesToBeCalibrated(RoboFlyStatus.TO_BE_CALIBRATED);
+		DBObject roboFly1 = aggregator.getRoboFly("RoboFly_ID_1");
+		DBObject roboFly2 = aggregator.getRoboFly("RoboFly_ID_2");
+		
+		Assert.assertEquals(RoboFlyStatus.TO_BE_CALIBRATED.name, roboFly1.get("status"));
+		Assert.assertEquals(RoboFlyStatus.TO_BE_CALIBRATED.name, roboFly2.get("status"));
 	}
 	
 	@Test

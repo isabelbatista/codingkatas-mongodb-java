@@ -59,7 +59,6 @@ public class MongoAggregator {
 		measurementCollection = database.getCollection("measurements");
 	}
 	
-	// [{ "$match" : { "soundIntensity" : { "$gt" : 0.0}}}, { "$group" : { "_id" : "allRoboFlies"} , "average" : { "$avg" : "$soundIntensity"}}]
 	public List<DBObject> calculateAverage(String averageFieldName) {
 		
 		DBObject match = new BasicDBObject().append("$match", new BasicDBObject(averageFieldName, new BasicDBObject("$gt", 0.00)));		
@@ -101,6 +100,28 @@ public class MongoAggregator {
 		return badValueDocs;
 	}
 	
+	public void markRoboFliesToBeCalibrated(RoboFlyStatus status) {
+		
+		Set<String> roboFlyIds = findBadValues();
+		
+		Iterator<String> roboFlyIterator = roboFlyIds.iterator();
+		while(roboFlyIterator.hasNext()) {
+			
+			String currentRoboFly = roboFlyIterator.next();
+			DBObject roboFly = roboFlyCollection.findOne(new BasicDBObject("_id", currentRoboFly));
+			updateRoboFly((String) currentRoboFly, roboFly, status);
+		}
+	}
+	
+	private void updateRoboFly(String roboFlyId, DBObject updateRoboFly, RoboFlyStatus status) {
+		
+		DBObject query = new BasicDBObject("_id", roboFlyId);
+		
+		DBObject update = new BasicDBObject().append("$set", new BasicDBObject("status", status.name));
+		
+		roboFlyCollection.update(query, update);
+	}
+	
 	// Preparation for tests
 	
 	public void saveRoboflies(List<DBObject> roboFlies) {		
@@ -118,5 +139,9 @@ public class MongoAggregator {
 		
 		DBCollection collection = database.getCollection("measurements");
 		collection.save(measurement);
+	}
+	
+	public DBObject getRoboFly(String roboFlyId) {
+		return roboFlyCollection.findOne(new BasicDBObject("_id", roboFlyId));
 	}
 }

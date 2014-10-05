@@ -59,7 +59,7 @@ public class MongoAggregator {
 		measurementCollection = database.getCollection("measurements");
 	}
 	
-	public List<DBObject> calculateAverage(String averageFieldName) {
+	public Double calculateAverage(String averageFieldName) {
 		
 		DBObject match = new BasicDBObject().append("$match", new BasicDBObject(averageFieldName, new BasicDBObject("$gt", 0.00)));		
 		DBObject groupFields = new BasicDBObject("_id", "allRoboFlies");
@@ -68,13 +68,13 @@ public class MongoAggregator {
 		
 		AggregationOutput output = measurementCollection.aggregate(match, group);
 		
-		List<DBObject> documentResults = new ArrayList<DBObject>();
-		for(DBObject result : output.results()) {
-			System.out.println("output: " + result.toString());
-			documentResults.add(result);
+		if (output != null) {
+			Iterator<DBObject> resultIterator = output.results().iterator();
+			if (resultIterator.hasNext()) {
+				return (Double) resultIterator.next().get("average");
+			}
 		}
-		
-		return documentResults;
+		return new Double(0.0);
 	}
 	
 	public Set<String> findBadValues() {
@@ -90,10 +90,7 @@ public class MongoAggregator {
 			AggregationOutput result = measurementCollection.aggregate(match);
 			
 			for (DBObject doc : result.results()) {
-			
-				DBRef roboFly = (DBRef) doc.get("robofly");
-				
-				System.out.println("Found bad value: " + roboFly.getId() + ": " + doc.toString());
+				DBRef roboFly = (DBRef) doc.get("RoboFlyID");
 				badValueDocs.add((String) roboFly.getId()); 
 			}
 		}
@@ -135,7 +132,7 @@ public class MongoAggregator {
 	public void createDocumentReference(String roboFlyReferenceId, DBObject measurement) {
 					
 		DBRef docReference = new DBRef(database, "roboflies", roboFlyReferenceId);
-		measurement.put("robofly", docReference);
+		measurement.put("RoboFlyID", docReference);
 		
 		DBCollection collection = database.getCollection("measurements");
 		collection.save(measurement);
@@ -143,5 +140,9 @@ public class MongoAggregator {
 	
 	public DBObject getRoboFly(String roboFlyId) {
 		return roboFlyCollection.findOne(new BasicDBObject("_id", roboFlyId));
+	}
+	
+	public void dropDatabase() {
+		database.dropDatabase();
 	}
 }

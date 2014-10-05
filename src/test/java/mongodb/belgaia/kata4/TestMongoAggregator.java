@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import mongodb.belgaia.kata4.RoboFlyStatus;
-
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import com.mongodb.DBObject;
 
 public class TestMongoAggregator {
 	
-	private static final String DATABASE_NAME = "test";
+	private static final String DATABASE_NAME = "kataTest";
 	private MongoAggregator aggregator;
 	
 	@Before
@@ -25,12 +24,16 @@ public class TestMongoAggregator {
 		createInitialMeasurements();
 	}
 	
+	@After
+	public void tearDown() {
+		aggregator.dropDatabase();
+	}
+	
 	@Test
 	public void shouldReturnBadValueRoboFlies() {
 		
 		Set<String> roboFlyIds = aggregator.findBadValues();
 		
-		// 1, 2, 4
 		Assert.assertEquals(2, roboFlyIds.size());
 		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_1"));
 		Assert.assertTrue(roboFlyIds.contains("RoboFly_ID_2"));
@@ -49,10 +52,8 @@ public class TestMongoAggregator {
 	
 	@Test
 	public void shouldCalculateAverageOfSoundIntensity() {
-		
-		List<DBObject> averages = aggregator.calculateAverage("soundIntensity");
-		Assert.assertEquals(1, averages.size());
-		Assert.assertEquals(55.333333333333336, averages.get(0).get("average"));
+		Double average = aggregator.calculateAverage("soundIntensity");
+		Assert.assertEquals(new Double(55.333333333333336), average);
 	}	
 	
 	private void createInitialRoboFlies() {

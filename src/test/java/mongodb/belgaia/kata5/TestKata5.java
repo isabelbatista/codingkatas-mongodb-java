@@ -26,10 +26,10 @@ public class TestKata5 {
 		createInitialMeasurements();
 	}
 	
-//	@After
-//	public void tearDown() {
+	@After
+	public void tearDown() {
 //		kata.dropDatabase();
-//	}
+	}
 	
 	@Test
 	public void shouldChangeStatusOfDamagedRobofly() {
@@ -70,12 +70,12 @@ public class TestKata5 {
 	public void shouldSetGPSAtMissedRoboFlyTypes() {
 		
 		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.LOST);
-		kata.addMoreInformation("RoboFly_ID_2", additionalInfo);
+		kata.addMoreInformation("RoboFly_ID_3", additionalInfo);
 		
 		kata.setGPSAtRoboFly();		
-		DBObject roboFly = kata.getRoboFly("RoboFly_ID_2");
-		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_1");
-		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_3");
+		DBObject roboFly = kata.getRoboFly("RoboFly_ID_3");
+		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_4");
+		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_1");
 		
 		Assert.assertEquals(Equipment.GPS.name(), roboFly.get("equipment"));
 		Assert.assertEquals(Equipment.GPS.name(), roboFlyOfSameType.get("equipment"));

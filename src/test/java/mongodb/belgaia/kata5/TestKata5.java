@@ -52,41 +52,6 @@ public class TestKata5 {
 		Assert.assertEquals(StatusDescription.DAMAGED.name(), (String)roboFly.get("statusDescription"));
 	}
 	
-	@Ignore
-	@Test
-	public void shouldSetEnergyShieldAtEatenRoboFlyTypes() {
-		
-		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.EATEN);
-		kata.addMoreInformation("RoboFly_ID_2", additionalInfo);
-		
-		kata.setEnergyShieldAtRoboFly();		
-		DBObject roboFly = kata.getRoboFly("RoboFly_ID_2");
-		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_1");
-		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_3");
-		
-		Assert.assertEquals(Equipment.ENERGY_SHIELD.name(), roboFly.get("equipment"));
-		Assert.assertEquals(Equipment.ENERGY_SHIELD.name(), roboFlyOfSameType.get("equipment"));
-		Assert.assertNull(roboFlyWithDifferentType.get("equipment"));
-	}
-	
-	@Ignore
-	@Test
-	public void shouldSetGPSAtMissedRoboFlyTypes() {
-		
-		Map<String, String> additionalInfo = createDummyAdditionalInformation(StatusDescription.LOST);
-		kata.addMoreInformation("RoboFly_ID_3", additionalInfo);
-		
-		kata.setGPSAtRoboFly();		
-		DBObject roboFly = kata.getRoboFly("RoboFly_ID_3");
-		DBObject roboFlyOfSameType = kata.getRoboFly("RoboFly_ID_4");
-		DBObject roboFlyWithDifferentType = kata.getRoboFly("RoboFly_ID_1");
-		
-		Assert.assertEquals(Equipment.GPS.name(), roboFly.get("equipment"));
-		Assert.assertEquals(Equipment.GPS.name(), roboFlyOfSameType.get("equipment"));
-		Assert.assertNull(roboFlyWithDifferentType.get("equipment"));
-
-	}
-	
 	private Map<String, String> createDummyAdditionalInformation(StatusDescription statusDesc) {
 		
 		String statusDescKey = "statusDescription";
@@ -189,5 +154,6 @@ public class TestKata5 {
 		
 		kata.saveMeasurements(measurements);
 	}
-
+	
+	
 }

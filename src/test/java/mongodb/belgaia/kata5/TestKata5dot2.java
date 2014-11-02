@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
@@ -101,6 +100,39 @@ public class TestKata5dot2 {
 		kata.addMoreInformation("RoboFly_ID_1", createDummyAdditionalInformation(StatusDescription.EATEN));
 		kata.addMoreInformation("RoboFly_ID_4", createDummyAdditionalInformation(StatusDescription.LOST));
 	}
+	
+	private void createInitialProfiles() {
+		
+		List<DBObject> profiles = new ArrayList<DBObject>();
+		
+		DBObject profile1 = new BasicDBObject("_id", "ROBOFLY_ID_FLY")
+					.append("type", RoboFlyType.FLY.name)
+					.append("size", 2)
+					.append("serviceTime", 60);
+		
+		DBObject profile2 = new BasicDBObject("_id", "ROBOFLY_ID_DRAGONFLY")
+					.append("type", RoboFlyType.DRAGONFLY.name)
+					.append("size", 5)
+					.append("serviceTime", 25);
+		
+		DBObject profile3 = new BasicDBObject("_id", "ROBOFLY_ID_MOSKITO")
+					.append("type", RoboFlyType.MOSKITO.name)
+					.append("size", 2)
+					.append("serviceTime", 120);
+		
+		DBObject profile4 = new BasicDBObject("_id", "ROBOFLY_ID_COPEPOD")
+					.append("type", RoboFlyType.COPEPOD.name)
+					.append("size", 8)
+					.append("serviceTime", 90);
+		
+		profiles.add(profile1);
+		profiles.add(profile2);
+		profiles.add(profile3);
+		profiles.add(profile4);
+	
+		kata.saveProfiles(profiles);
+	}
+
 	
 	private Map<String, String> createDummyAdditionalInformation(StatusDescription statusDesc) {
 		

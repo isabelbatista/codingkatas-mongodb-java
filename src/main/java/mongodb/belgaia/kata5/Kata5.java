@@ -14,6 +14,7 @@ public class Kata5 {
 	
 	public void startKata5() {
 		System.out.println("Update missed or damaged roboflies with additional information and new status.");
+		System.out.println("Add new equipment to the roboflies due to status description.");
 		updateRoboFlies();
 	}
 	
@@ -30,6 +31,9 @@ public class Kata5 {
 		updater.changeStatus(roboFly2, RoboFlyStatus.OUT_OF_SERVICE);
 		updater.changeStatus(roboFly3, RoboFlyStatus.OUT_OF_SERVICE);
 		updater.changeStatus(roboFly5, RoboFlyStatus.OUT_OF_SERVICE);
+		
+		updater.setEquipmentAtRoboFly(StatusDescription.EATEN);
+		updater.setEquipmentAtRoboFly(StatusDescription.LOST);
 	}
 	
 	private Map<String, String> createInfos(int roboFlyId) {
@@ -61,6 +65,6 @@ public class Kata5 {
 		}
 		
 		return information;		
-	}	
+	}
 }
 

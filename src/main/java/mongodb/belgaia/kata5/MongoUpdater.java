@@ -32,6 +32,7 @@ public class MongoUpdater {
 
 	private DBCollection robofliesCollection;
 	private DBCollection measurementsCollection;
+	private DBCollection profilesCollection;
 
 	public MongoUpdater() {
 		try {
@@ -56,6 +57,7 @@ public class MongoUpdater {
 	private void initCollections() {
 		robofliesCollection = database.getCollection("roboflies");
 		measurementsCollection = database.getCollection("measurements");
+		profilesCollection = database.getCollection("profiles");
 	}
 
 	public void dropDatabase() {
@@ -137,6 +139,10 @@ public class MongoUpdater {
 
 	public void saveMeasurements(List<DBObject> measurements) {
 		measurementsCollection.insert(measurements);
+	}
+	
+	public void saveProfiles(List<DBObject> profiles) {
+		profilesCollection.insert(profiles);
 	}
 
 	public void createDocumentReference(String roboFlyReferenceId,

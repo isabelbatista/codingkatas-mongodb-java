@@ -1,9 +1,9 @@
-package mongodb.belgaia.kata3;
+package mongodb.belgaia.kata5;
 
 class Profile {
 	
 	String id;
-	RoboFly.Type roboflyType;
+	RoboFlyType roboflyType;
 	Integer size;
 	Integer serviceTime;
 	
@@ -13,10 +13,10 @@ class Profile {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public RoboFly.Type getRoboflyType() {
+	public RoboFlyType getRoboflyType() {
 		return roboflyType;
 	}
-	public void setRoboflyType(RoboFly.Type roboflyType) {
+	public void setRoboflyType(RoboFlyType roboflyType) {
 		this.roboflyType = roboflyType;
 	}
 	public Integer getSize() {

@@ -88,7 +88,7 @@ public class ExecutorOfAllKatas {
 			executor.startKataTwo();
 			executor.startKataThree();
 			executor.startKataFour();
-			executor.startKataFive();
+//			executor.startKataFive();
 		} catch (CollectionDoesNotExistExc e) {
 			e.printStackTrace();
 		}

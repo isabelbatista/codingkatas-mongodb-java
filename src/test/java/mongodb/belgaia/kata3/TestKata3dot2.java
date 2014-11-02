@@ -49,6 +49,15 @@ public class TestKata3dot2 {
 		}
 	}
 	
+	// FIXME: should not be green
+	@Test
+	public void shouldReturnTypeOfRoboFlyOnlyByCheckingProfiles() throws CollectionDoesNotExistExc {
+		
+		kata.extractFieldsToProfile("roboflies", "profiles");
+		String roboFlyType = kata.getRoboFlyType("RoboFly_ID_1");
+		Assert.assertEquals(roboFlyType, RoboFlyType.FLY.name);
+	}
+	
 	private List<RoboFly> createDummyRoboFlies() {
 		
 		List<RoboFly> roboFlies = new ArrayList<RoboFly>();

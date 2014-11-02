@@ -195,6 +195,12 @@ public class Kata3 {
 		collection.update(new BasicDBObject(), new BasicDBObject("$unset", removeFields), false, true); 
 	}
 	
+	public String getRoboFlyType(String roboFlyId) {
+		
+		DBObject roboFly = roboFliesCollection.findOne(new BasicDBObject("_id", roboFlyId));
+		return (String) roboFly.get("type");		
+	}
+	
 	public List<Profile> getProfiles() {
 		
 		List<Profile> profiles = new ArrayList<Profile>();

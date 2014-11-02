@@ -116,9 +116,16 @@ public class MongoUpdater {
 		DBCursor roboFlies = robofliesCollection.find(findQuery);
 		
 		while(roboFlies.hasNext()) {
+			
 			DBObject roboFly = roboFlies.next();
-			DBObject updateQuery = new BasicDBObject(TYPE_FIELD_NAME, roboFly.get(TYPE_FIELD_NAME));
-			robofliesCollection.update(updateQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
+			String roboFlyType = (String) roboFly.get(TYPE_FIELD_NAME);
+			String roboFlyId = (String) roboFly.get(ID_FIELD_NAME);
+			
+			DBObject typeQuery = new BasicDBObject(TYPE_FIELD_NAME, roboFlyType);
+			DBObject idQuery = new BasicDBObject(ID_FIELD_NAME, roboFlyId);
+			
+			robofliesCollection.update(typeQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
+			robofliesCollection.update(idQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
 		}
 	}
 

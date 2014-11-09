@@ -339,8 +339,29 @@ public class Kata3 {
 			roboFlyBuilder.serviceTime((Integer) document.get("serviceTime"));
 		}
 		
+		if(document.get("typeRef") != null) {
+			DBRef typeReference = (DBRef) document.get("typeRef");
+			roboFlyBuilder.type(convertTypeRefToRoboFlyType(typeReference));
+		}
+		
 		return roboFlyBuilder.build();
 	}	
+	
+	private RoboFly.Type convertTypeRefToRoboFlyType(DBRef typeRef) {
+		String typeRefId = (String) typeRef.getId();
+		
+		RoboFly.Type type = null;
+		if(typeRefId.equals("ROBOFLY_ID_FLY")) {
+			type = RoboFly.Type.FLY;
+		} else if(typeRefId.equals("ROBOFLY_ID_MOSKITO")) {
+			type = RoboFly.Type.MOSKITO;
+		} else if(typeRefId.equals("ROBOFLY_ID_DRAGONFLY")) {
+			type = RoboFly.Type.DRAGONFLY;
+		} else if(typeRefId.equals("ROBOFLY_ID_COPEPOD")) {
+			type = RoboFly.Type.COPEPOD;
+		}
+		return type;
+	}
 	
 	private List<RoboFly> getRoboFlyList() {
 		

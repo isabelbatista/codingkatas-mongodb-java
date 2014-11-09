@@ -41,10 +41,10 @@ public class TestKata3dot2 {
 		Assert.assertNotNull(profiles);
 		Assert.assertEquals(4, profiles.size());
 		
-		// expect fields type, size and service time are not set in roboflies any more
+		// expect fields size and service time are not set in roboflies any more
 		for(RoboFly roboFly : roboFlies) {
-			Assert.assertNull(roboFly.getSize());
 			Assert.assertNotNull(roboFly.getType());
+			Assert.assertNull(roboFly.getSize());
 			Assert.assertNull(roboFly.getServiceTime());
 		}
 	}

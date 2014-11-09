@@ -21,6 +21,7 @@ public class TestMongoDbConnector {
 	public void setUp() {
 		mongodbConnector = new MongoDbConnector(DATABASE_NAME);
 		mongodbConnector.saveRoboFly(createRoboFlyDocument());
+		
 	}
 	
 	@After
@@ -44,13 +45,16 @@ public class TestMongoDbConnector {
 	@Test
 	public void shouldReturnOneMeasurementDocument() {
 		
-		String measurementName = "measurement_average_1";
+		String roboFlyId = "RoboFly_ID_1";
+		Robofly2MeasurementReference reference = new Robofly2MeasurementReference("roboflies", "measurements", "robofly", roboFlyId, getDummyMeasurementDocument());
+		mongodbConnector.setDocumentReference(reference);
 		
-		DBObject foundDocument = mongodbConnector.getMeasurementByName(measurementName);
-		
+		String expectedMeasurementName = "measurement_average_1";
+		DBObject foundDocument = mongodbConnector.getMeasurementByName(expectedMeasurementName);
+
 		Assert.assertNotNull(foundDocument);
 		Assert.assertNotNull(foundDocument.get("name"));
-		Assert.assertEquals(measurementName, foundDocument.get("name").toString());
+		Assert.assertEquals(expectedMeasurementName, foundDocument.get("name").toString());
 	}
 	
 	private DBObject getDummyMeasurementDocument() {

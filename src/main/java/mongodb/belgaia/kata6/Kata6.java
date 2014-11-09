@@ -6,7 +6,6 @@ public class Kata6 {
 	MongoConnector mongoConnector = new MongoConnector();
 	
 	public double calculateAverageLoadingTime(RoboFlyType roboflyType) {
-		mongoConnector.calculateAverageLoadingTime(roboflyType);
-		return 0.0;
+		return mongoConnector.calculateAverageLoadingTime(roboflyType);
 	}
 }

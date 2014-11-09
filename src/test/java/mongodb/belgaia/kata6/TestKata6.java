@@ -25,7 +25,7 @@ public class TestKata6 {
 	
 	@After
 	public void tearDown() {
-//		mongoConnector.dropDatabase();
+		mongoConnector.dropDatabase();
 	}
 	
 	@Test
@@ -46,11 +46,9 @@ public class TestKata6 {
 		Assert.assertEquals(3, charsets.size());
 	}
 	
-	@Ignore
 	@Test
 	public void shouldCalculateAverageOfLoadingTimeForRoboflyType() {
 		double averageTime = kata.calculateAverageLoadingTime(RoboFlyType.FLY);
-		
 		Assert.assertEquals(6.33, averageTime, 0.3);
 	}
 }

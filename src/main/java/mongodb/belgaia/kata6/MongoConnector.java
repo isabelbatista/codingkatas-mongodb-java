@@ -66,16 +66,22 @@ public class MongoConnector {
 	
 	public double calculateAverageLoadingTime(RoboFlyType flyType) {
 		
-		List<DBObject> roboFlies = getRoboFliesByType(flyType);
-		List<String> roboFlyIds = new ArrayList<String>();
-		for(DBObject roboFly : roboFlies) {
-			roboFlyIds.add((String) roboFly.get("_id")); 
+		Set<DBObject> chargingSets = findChargingSetsByRoboFlyType(convertRoboFlyTypeToProfileType(flyType));
+		
+		Double sumOfLoadingTime = new Double(0.0);
+		while(chargingSets.iterator().hasNext()) {
+			DBObject chargingSet = chargingSets.iterator().next();
+			sumOfLoadingTime += (Double) chargingSet.get("charge_length_minutes");
 		}
-		
-		double average = calculate(roboFlyIds);
-		
-		return 0;
+		double average = sumOfLoadingTime / chargingSets.size();
+		System.out.println(average);
+		return average;
 	}
+	
+	private String convertRoboFlyTypeToProfileType(RoboFlyType roboFlyType) {
+		return "ROBOFLY_ID_" + roboFlyType.name;
+	}
+	
 	
 	public List<DBObject> findFliesByType(String roboFlyType) {
 		
@@ -104,21 +110,7 @@ public class MongoConnector {
 	}
 	
 	public Set<DBObject> findChargingSetsByRoboFlyType(String roboFlyType) {
-		
-//		Set<DBObject> chargingSets = findChargingSetsByRoboFlyType_ComplicatedVersion(roboFlyType);
-		Set<DBObject> chargingSets = findChargingSetsByRoboFlyType_BetterVersion(roboFlyType);
-		
-		return chargingSets;
-	}
-	
-	private Set<DBObject> findChargingSetsByRoboFlyType_BetterVersion(String roboFlyType) {
-		
-		DBObject queryForRoboFliesByType = buildQueryForFindingRoboFliesByType(roboFlyType);
-		DBCursor roboFliesByType = robofliesCollection.find(queryForRoboFliesByType);
-//		QueryBuilder.start().in(object)
-//		new BasicDBObject("$and", )
-		
-		return null;
+		return findChargingSetsByRoboFlyType_ComplicatedVersion(roboFlyType);		
 	}
 	
 	private Set<DBObject> findChargingSetsByRoboFlyType_ComplicatedVersion(String roboFlyType) {
@@ -155,17 +147,11 @@ public class MongoConnector {
 		return query;
 	}
 	
-	private DBObject buildQueryForFindingChargingSetsByRoboFlyType(String roboFlyType) {
-		
-		
-		
-		return null;
-	}
-	
 	public void dropDatabase() {
 		database.dropDatabase();
 	}
 	
+	// FIXME: use this instead of calculating averages manually
 	private double calculate(List<String> roboFlyIds) {
 		
 		DBObject inQuery = new BasicDBObject("$in", roboFlyIds);
@@ -186,50 +172,8 @@ public class MongoConnector {
 			System.out.println("No results found.");
 		}
 		
-//		
-//		AggregationOutput result = chargingCollection.aggregate(match, group);
-//		if (result != null) {
-//			Iterator<DBObject> resultIterator = result.results().iterator();
-//			if (resultIterator.hasNext()) {
-//				return (Double) resultIterator.next().get("averageLoadingTime");
-//			}
-//		}
 		return new Double(0.0);
 	}
-	
-	
-	private List<DBObject> getRoboFliesByType(RoboFlyType flyType) {
-		
-//		DBObject fred = collection.findOne();
-//		DBRef addressObj = (DBRef)fred.get("address");
-//		addressObj.fetch()
-		DBRef profileReference = new DBRef(database, "profiles", "ROBOFLY_ID_FLY");
-		DBObject profileRefDoc = profileReference.fetch();
-		DBCursor roboFliesByType = robofliesCollection.find(new BasicDBObject("typeRef", profileRefDoc));
-		
-		
-//		DBObject typeQuery = new BasicDBObject("typeRef", new DBRef(database, "profiles", flyType.name));
-//		DBCursor roboFliesByType = robofliesCollection.find(typeQuery);
-		
-		List<DBObject> roboFlies = new ArrayList<DBObject>();
-		while(roboFliesByType.hasNext()) {
-			roboFlies.add(roboFliesByType.next());
-		}
-		return roboFlies;
-	}
-	
-	private List<DBObject> getChargingSetsByRoboFlyId(String roboFlyId) {
-		
-		DBObject query = new BasicDBObject("roboFlyRef", new DBRef(database, "roboflies", roboFlyId));
-		DBCursor chargingSetsByFlyId = chargingCollection.find(query);
-		
-		List<DBObject> chargingSets = new ArrayList<DBObject>();
-		while(chargingSetsByFlyId.hasNext()) {
-			chargingSets.add(chargingSetsByFlyId.next());
-		}
-		return chargingSets;
-	}
-	
 	
 	public void importData2MongoDb(String fileName, String collectionName) {
 		

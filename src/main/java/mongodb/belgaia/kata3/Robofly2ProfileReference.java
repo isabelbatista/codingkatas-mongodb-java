@@ -1,8 +1,8 @@
-package mongodb.belgaia.kata2;
+package mongodb.belgaia.kata3;
 
 import com.mongodb.DBObject;
 
-class Robofly2MeasurementReference {
+public class Robofly2ProfileReference {
 	
 	// The collection name of the referenced document
 	private String referenceCollection;
@@ -19,7 +19,7 @@ class Robofly2MeasurementReference {
 	// The document where the reference must be set
 	private DBObject document;
 	
-	public Robofly2MeasurementReference(String referenceCollection, String documentCollection, String referenceField, String referenceId, DBObject document) {
+	public Robofly2ProfileReference(String referenceCollection, String documentCollection, String referenceField, String referenceId, DBObject document) {
 		
 		this.referenceCollection = referenceCollection;
 		this.documentCollection = documentCollection;

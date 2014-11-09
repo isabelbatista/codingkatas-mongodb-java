@@ -1,4 +1,4 @@
-package mongodb.belgaia.kata2dot2;
+package mongodb.belgaia.kata2;
 
 
 import mongodb.belgaia.kata2.MongoDbConnector;
@@ -14,19 +14,17 @@ import com.mongodb.DBObject;
 
 public class TestMongoDbConnector {
 	
-	private static final String DATABASE_NAME = "testmongodbkatas";
+	private static final String DATABASE_NAME = "kataTest";
 	private MongoDbConnector mongodbConnector;
 	
 	@Before
 	public void setUp() {
-		
 		mongodbConnector = new MongoDbConnector(DATABASE_NAME);
 		mongodbConnector.saveRoboFly(createRoboFlyDocument());
 	}
 	
 	@After
 	public void tearDown() {
-		
 		mongodbConnector.dropDatabase();
 	}
 	
@@ -46,13 +44,13 @@ public class TestMongoDbConnector {
 	@Test
 	public void shouldReturnOneMeasurementDocument() {
 		
-		String measurementId = "measurement_average_1";
+		String measurementName = "measurement_average_1";
 		
-		DBObject foundDocument = mongodbConnector.getMeasurement(measurementId);
+		DBObject foundDocument = mongodbConnector.getMeasurementByName(measurementName);
 		
 		Assert.assertNotNull(foundDocument);
-		Assert.assertNotNull(foundDocument.get("_id"));
-		Assert.assertEquals(measurementId, foundDocument.get("_id").toString());
+		Assert.assertNotNull(foundDocument.get("name"));
+		Assert.assertEquals(measurementName, foundDocument.get("name").toString());
 	}
 	
 	private DBObject getDummyMeasurementDocument() {

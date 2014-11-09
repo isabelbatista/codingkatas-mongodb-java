@@ -51,11 +51,20 @@ public class MongoDbConnector {
 		return collection.find().size();
 	}
 	
-	public DBObject getMeasurement(String docId) {
+	public DBObject getMeasurementById(String docId) {
 		
 		DBCollection collection = database.getCollection("measurements");
 		DBObject document2find = new BasicDBObject();
 		document2find.put("_id", docId);
+		
+		return collection.findOne(document2find);
+	}
+	
+	public DBObject getMeasurementByName(String name) {
+		
+		DBCollection collection = database.getCollection("measurements");
+		DBObject document2find = new BasicDBObject();
+		document2find.put("name", name);
 		
 		return collection.findOne(document2find);
 	}

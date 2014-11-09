@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class TestKata3dot2 {
 	
-	private static final String DATABASE_NAME = "testmongodbkatas";
+	private static final String DATABASE_NAME = "kataTest";
 	private Kata3 kata;
 	
 	@Before
@@ -44,7 +44,7 @@ public class TestKata3dot2 {
 		// expect fields type, size and service time are not set in roboflies any more
 		for(RoboFly roboFly : roboFlies) {
 			Assert.assertNull(roboFly.getSize());
-			Assert.assertNull(roboFly.getType());
+			Assert.assertNotNull(roboFly.getType());
 			Assert.assertNull(roboFly.getServiceTime());
 		}
 	}
@@ -53,9 +53,17 @@ public class TestKata3dot2 {
 	@Test
 	public void shouldReturnTypeOfRoboFlyOnlyByCheckingProfiles() throws CollectionDoesNotExistExc {
 		
-		kata.extractFieldsToProfile("roboflies", "profiles");
-		String roboFlyType = kata.getRoboFlyType("RoboFly_ID_1");
-		Assert.assertEquals(roboFlyType, RoboFlyType.FLY.name);
+		kata.startKata3dot2();
+			
+		String roboFlyTypeFly = kata.getRoboFlyType("RoboFly_ID_1");
+		String roboFlyTypeMoskito= kata.getRoboFlyType("RoboFly_ID_2");
+		String roboFlyTypeDragonfly= kata.getRoboFlyType("RoboFly_ID_3");
+		String roboFlyTypeCopepod= kata.getRoboFlyType("RoboFly_ID_4");
+		
+		Assert.assertEquals(RoboFlyType.FLY.name, roboFlyTypeFly);
+		Assert.assertEquals(RoboFlyType.MOSKITO.name, roboFlyTypeMoskito);
+		Assert.assertEquals(RoboFlyType.DRAGONFLY.name, roboFlyTypeDragonfly);
+		Assert.assertEquals(RoboFlyType.COPEPOD.name, roboFlyTypeCopepod);
 	}
 	
 	private List<RoboFly> createDummyRoboFlies() {

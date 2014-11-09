@@ -23,7 +23,7 @@ public class Kata2 {
 		System.out.println("Creating doc reference for robofly 1 and measurement 1");
 		
 		String referenceId = "RoboFly_ID_1";
-		DBObject measurementDoc = mongodbConnector.getMeasurement("measurement_average_1");
+		DBObject measurementDoc = mongodbConnector.getMeasurementById("measurement_average_1");
 		
 		Robofly2MeasurementReference docReference = new Robofly2MeasurementReference(referenceCollection, documentCollection, referenceField, referenceId, measurementDoc);
 		mongodbConnector.setDocumentReference(docReference);
@@ -32,7 +32,7 @@ public class Kata2 {
 		System.out.println("Creating doc reference for robofly 2 and measurement 2");
 
 		referenceId = "RoboFly_ID_2";
-		measurementDoc = mongodbConnector.getMeasurement("measurement_average_2");
+		measurementDoc = mongodbConnector.getMeasurementById("measurement_average_2");
 		
 		docReference.setReferenceId(referenceId);
 		docReference.setDocument(measurementDoc);
@@ -43,7 +43,7 @@ public class Kata2 {
 		System.out.println("Creating doc reference for robofly 3 and measurement 3");
 
 		referenceId = "RoboFly_ID_3";
-		measurementDoc = mongodbConnector.getMeasurement("measurement_average_3");
+		measurementDoc = mongodbConnector.getMeasurementById("measurement_average_3");
 				
 		docReference.setReferenceId(referenceId);
 		docReference.setDocument(measurementDoc);

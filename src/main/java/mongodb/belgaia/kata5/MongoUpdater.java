@@ -14,17 +14,12 @@ import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
 
-// FIXME: Does not update the equipment once set
-public class MongoUpdater {
+class MongoUpdater {
 
 	private static final String STATUS_FIELD_NAME = "status";
-
 	private static final String ID_FIELD_NAME = "_id";
-
-	private static final String TYPE_FIELD_NAME = "type";
-
+	private static final String TYPE_REF_FIELD_NAME = "typeRef";
 	private static final String STATUS_DESCRIPTION_FIELD_NAME = "statusDescription";
-
 	private static final String DATABASE_NAME = "mobilerobotics";
 
 	private Mongo client;
@@ -105,6 +100,29 @@ public class MongoUpdater {
 	
 	public void setEquipmentAtRoboFly(StatusDescription statusDesc) {
 		
+		Equipment equipment = matchEquipmentToStatus(statusDesc);
+		
+		DBObject findQuery = new BasicDBObject(STATUS_DESCRIPTION_FIELD_NAME, statusDesc.name());
+		DBCursor roboFlies = robofliesCollection.find(findQuery);
+		
+		while(roboFlies.hasNext()) {
+			
+			DBObject roboFly = roboFlies.next();
+			DBRef roboFlyTypeRef = (DBRef) roboFly.get(TYPE_REF_FIELD_NAME);
+			String roboFlyId = (String) roboFly.get(ID_FIELD_NAME);
+			
+			DBObject idQuery = new BasicDBObject(ID_FIELD_NAME, roboFlyId);
+			DBObject typeQuery = new BasicDBObject(TYPE_REF_FIELD_NAME, new DBRef(database, "profiles", roboFlyTypeRef.getId()));
+			
+			// be aware that more than one document should be updated
+			boolean multiUpdate = true;
+			
+			robofliesCollection.update(idQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
+			robofliesCollection.update(typeQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())), false, multiUpdate);	
+		}
+	}
+	
+	private Equipment matchEquipmentToStatus(StatusDescription statusDesc) {
 		Equipment equipment = null;
 		if(statusDesc.equals(StatusDescription.EATEN)) {
 			equipment = Equipment.ENERGY_SHIELD;
@@ -113,22 +131,14 @@ public class MongoUpdater {
 		} else {
 			throw new IllegalArgumentException("Unknown status description: " + statusDesc);
 		}
+		return equipment;
+	}
+	
+	public void addDocumentReference(String roboFlyId, String profileType) {
 		
-		DBObject findQuery = new BasicDBObject(STATUS_DESCRIPTION_FIELD_NAME, statusDesc.name());
-		DBCursor roboFlies = robofliesCollection.find(findQuery);
-		
-		while(roboFlies.hasNext()) {
-			
-			DBObject roboFly = roboFlies.next();
-			String roboFlyType = (String) roboFly.get(TYPE_FIELD_NAME);
-			String roboFlyId = (String) roboFly.get(ID_FIELD_NAME);
-			
-			DBObject typeQuery = new BasicDBObject(TYPE_FIELD_NAME, roboFlyType);
-			DBObject idQuery = new BasicDBObject(ID_FIELD_NAME, roboFlyId);
-			
-			robofliesCollection.update(typeQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
-			robofliesCollection.update(idQuery, new BasicDBObject("$set", new BasicDBObject("equipment", equipment.name())));
-		}
+		DBObject profile = profilesCollection.findOne(new BasicDBObject("type", profileType));
+		DBRef reference = new DBRef(database, "profiles", (String) profile.get("_id"));
+		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
 	}
 
 	// Preparation for tests
@@ -144,19 +154,13 @@ public class MongoUpdater {
 	public void saveProfiles(List<DBObject> profiles) {
 		profilesCollection.insert(profiles);
 	}
-
-	public void createDocumentReference(String roboFlyReferenceId,
-			DBObject measurement) {
-
-		DBRef docReference = new DBRef(database, "roboflies",
-				roboFlyReferenceId);
-		measurement.put("RoboFlyID", docReference);
-
-		DBCollection collection = database.getCollection("measurements");
-		collection.save(measurement);
-	}
-
+	
 	public DBObject getRoboFly(String roboFlyId) {
 		return robofliesCollection.findOne(new BasicDBObject(ID_FIELD_NAME, roboFlyId));
+	}
+	
+	public DBObject getProfileById(String profileId) {
+		return profilesCollection.findOne(new BasicDBObject(ID_FIELD_NAME, profileId));
+
 	}
 }

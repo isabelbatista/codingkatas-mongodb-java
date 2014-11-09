@@ -11,8 +11,8 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.DBRef;
 import com.mongodb.Mongo;
-import com.mongodb.WriteResult;
 
 // TODO: Don't remove type from robofly. Need to be a DBRef to the correct profile.
 public class Kata3 {
@@ -135,6 +135,7 @@ public class Kata3 {
 		
 		extractFieldsToProfile(sourceCollection, targetCollection);
 		removeFieldsFromCollection(sourceCollection);
+		convertFieldTypeToDocReference();
 	}
 	
 	/**
@@ -185,20 +186,51 @@ public class Kata3 {
 		}
 	}
 	
-	public void removeFieldsFromCollection(String sourceCollection) {
-		
-		// remove fields "type", "size" and "serviceTime"
-		DBCollection collection = database.getCollection(sourceCollection);
+	public void removeFieldsFromCollection(String sourceCollection) {		
+		removeFieldFromEachDocument("size", sourceCollection);
+		removeFieldFromEachDocument("serviceTime", sourceCollection);
+	}
 	
-		DBObject removeFields = new BasicDBObject().append("size", 1).append("type", 1).append("serviceTime", 1);
-
-		collection.update(new BasicDBObject(), new BasicDBObject("$unset", removeFields), false, true); 
+	private void removeFieldFromEachDocument(String fieldName, String collectionName) {
+		DBCollection collection = database.getCollection(collectionName);
+		DBObject removeField = new BasicDBObject().append(fieldName, 1);
+		collection.update(new BasicDBObject(), new BasicDBObject("$unset", removeField), false, true);
+	}
+	
+	private void removeField(DBObject document, String fieldName, String collectionName) {
+		DBCollection collection = database.getCollection(collectionName);
+		DBObject removeField = new BasicDBObject().append(fieldName, 1);
+		collection.update(document, new BasicDBObject("$unset", removeField), false, true);
+	}
+	
+	private void convertFieldTypeToDocReference() {
+		
+		DBCursor allRoboFlies = roboFliesCollection.find();
+		while(allRoboFlies.hasNext()) {
+			
+			DBObject roboFly = allRoboFlies.next();
+			String roboFlyType = (String) roboFly.get("type");
+			
+			if(roboFlyType != null) {
+				DBObject profile = profilesCollection.findOne(new BasicDBObject("type", roboFlyType));
+				
+				DBRef reference = new DBRef(database, "profiles", (String) profile.get("_id"));
+				roboFliesCollection.update(new BasicDBObject("_id", (String) roboFly.get("_id")), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
+				
+				removeField(roboFly, "type", "roboflies");
+			}		
+		}
+	}
+	
+	private DBObject getDocReference(DBObject document, String refFieldName) {
+		DBRef referencedDoc = (DBRef) document.get(refFieldName);
+		return referencedDoc.fetch();
 	}
 	
 	public String getRoboFlyType(String roboFlyId) {
-		
 		DBObject roboFly = roboFliesCollection.findOne(new BasicDBObject("_id", roboFlyId));
-		return (String) roboFly.get("type");		
+		DBObject referencedDoc = getDocReference(roboFly, "typeRef");
+		return (String) referencedDoc.get("type");		
 	}
 	
 	public List<Profile> getProfiles() {

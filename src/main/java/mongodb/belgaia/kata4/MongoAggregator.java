@@ -1,7 +1,6 @@
 package mongodb.belgaia.kata4;
 
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -15,7 +16,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
-import com.mongodb.QueryBuilder;
 
 public class MongoConnector {
 	
@@ -69,13 +69,33 @@ public class MongoConnector {
 		Set<DBObject> chargingSets = findChargingSetsByRoboFlyType(convertRoboFlyTypeToProfileType(flyType));
 		
 		Double sumOfLoadingTime = new Double(0.0);
-		while(chargingSets.iterator().hasNext()) {
-			DBObject chargingSet = chargingSets.iterator().next();
-			sumOfLoadingTime += (Double) chargingSet.get("charge_length_minutes");
+		
+		Iterator<DBObject> iteratorForChargingSets = chargingSets.iterator();
+		while(iteratorForChargingSets.hasNext()) {
+			DBObject chargingSet = iteratorForChargingSets.next();
+			Integer lengthForCharging = (Integer) chargingSet.get("charge_length_minutes");
+			sumOfLoadingTime += lengthForCharging.doubleValue();
 		}
+		
 		double average = sumOfLoadingTime / chargingSets.size();
-		System.out.println(average);
 		return average;
+	}
+	
+	public double calculateAverageOfFieldByRoboFlyType(String fieldName, RoboFlyType roboFlyType) {
+		
+		Set<DBObject> chargingSets = findChargingSetsByRoboFlyType(convertRoboFlyTypeToProfileType(roboFlyType));
+
+		Double sumOfLoadingTime = new Double(0.0);
+		
+		Iterator<DBObject> iteratorForChargingSets = chargingSets.iterator();
+		
+		while(iteratorForChargingSets.hasNext()) {
+			DBObject chargingSet = iteratorForChargingSets.next();
+			Integer lengthForCharging = (Integer) chargingSet.get(fieldName);
+			sumOfLoadingTime += lengthForCharging.doubleValue();
+		}
+		
+		return sumOfLoadingTime / chargingSets.size();
 	}
 	
 	private String convertRoboFlyTypeToProfileType(RoboFlyType roboFlyType) {

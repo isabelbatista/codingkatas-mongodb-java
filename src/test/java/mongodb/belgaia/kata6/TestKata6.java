@@ -6,7 +6,6 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.DBObject;
@@ -15,17 +14,18 @@ public class TestKata6 {
 	
 	private static final String DATABASE_NAME = "kataTest";
 	Kata6 kata;
-	MongoConnector mongoConnector = new MongoConnector(DATABASE_NAME);
+	MongoConnector mongoConnector;
 	
 	@Before
 	public void setUp() {
 		TestPreparation.prepareDatabase();
-		kata = new Kata6();		
+		mongoConnector = new MongoConnector(DATABASE_NAME);
+		kata = new Kata6(DATABASE_NAME);		
 	}
 	
 	@After
 	public void tearDown() {
-		mongoConnector.dropDatabase();
+//		mongoConnector.dropDatabase();
 	}
 	
 	@Test
@@ -49,6 +49,14 @@ public class TestKata6 {
 	@Test
 	public void shouldCalculateAverageOfLoadingTimeForRoboflyType() {
 		double averageTime = kata.calculateAverageLoadingTime(RoboFlyType.FLY);
-		Assert.assertEquals(6.33, averageTime, 0.3);
+		Assert.assertEquals(5.0, averageTime, 0.0);
+	}
+	
+	@Test
+	public void shouldCalculateAverageOfNeededEnergyUnitsByRoboFlyType() {
+		RoboFlyType type = RoboFlyType.MOSKITO;
+		double averageTime = kata.calculateAverageOfEnergyUnits(type);
+		
+		Assert.assertEquals(5.0, averageTime, 0.00);
 	}
 }

@@ -19,7 +19,6 @@ public class TestKata6 {
 	@Before
 	public void setUp() {
 		mongoConnector = new MongoConnector(DATABASE_NAME);
-//		DatabasePreparation preparation = new DatabasePreparation(mongoConnector);
 		TestPreparation preparation = new TestPreparation(DATABASE_NAME);
 		preparation.prepareDatabase();
 		kata = new Kata6(DATABASE_NAME);		
@@ -27,7 +26,7 @@ public class TestKata6 {
 	
 	@After
 	public void tearDown() {
-//		mongoConnector.dropDatabase();
+		mongoConnector.dropDatabase();
 	}
 	
 	@Test

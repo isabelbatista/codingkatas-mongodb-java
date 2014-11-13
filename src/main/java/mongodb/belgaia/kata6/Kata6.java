@@ -17,6 +17,10 @@ public class Kata6 {
 		mongoConnector = new MongoConnector(DATABASE_NAME);
 	}
 	
+	public Kata6(String databaseName) {
+		mongoConnector = new MongoConnector(databaseName);
+	}
+	
 	public void startKata6() {
 		
 		System.out.println("Import data about charging of robotic flies.");
@@ -35,9 +39,7 @@ public class Kata6 {
 		System.out.println("Type COPEPOD: " + calculateAverageOfEnergyUnits(RoboFlyType.COPEPOD));
 	}
 	
-	public Kata6(String databaseName) {
-		mongoConnector = new MongoConnector(databaseName);
-	}
+	
 	
 	public double calculateAverageLoadingTime(RoboFlyType roboflyType) {
 		return mongoConnector.calculateAverageOfFieldByRoboFlyType(LOADING_TIME_FIELDNAME, roboflyType);

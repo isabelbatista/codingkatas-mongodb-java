@@ -17,7 +17,7 @@ import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
 
-public class MongoConnector {
+class MongoConnector {
 	
 	private static final String DATABASE_NAME = "mobilerobotics";
 

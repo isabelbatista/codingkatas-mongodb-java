@@ -7,12 +7,15 @@ import com.mongodb.DBObject;
 class TestPreparation {
 	
 	private static final String DATABASE_NAME = "kataTest";
-	private MongoConnector kata = new MongoConnector(DATABASE_NAME);
-	private static final TestPreparation preparation = new TestPreparation();
+	private MongoConnector kata;
 	
-	public static void prepareDatabase() {
+	public TestPreparation(String databaseName) {
+		kata = new MongoConnector(DATABASE_NAME);
+	}
+	
+	public void prepareDatabase() {
 		
-		preparation.importDataFiles();
+		importDataFiles();
 		
 		System.out.println("--- Waiting for some seconds ---");
 		try {
@@ -21,7 +24,7 @@ class TestPreparation {
 			e.printStackTrace();
 		}
 
-		preparation.addDocumentReferences();
+		addDocumentReferences();
 	}
 	
 	private void importDataFiles() {
@@ -36,8 +39,8 @@ class TestPreparation {
 	
 	private void addDocumentReferences() {
 		
-		List<DBObject> roboFlies = preparation.getAllRoboflies();
-		List<DBObject> chargingSets = preparation.getAllChargingSets();		
+		List<DBObject> roboFlies = getAllRoboflies();
+		List<DBObject> chargingSets = getAllChargingSets();		
 		
 		for(DBObject roboFly : roboFlies) {
 			String roboFlyId = (String) roboFly.get("_id");

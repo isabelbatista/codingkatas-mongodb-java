@@ -18,8 +18,10 @@ public class TestKata6 {
 	
 	@Before
 	public void setUp() {
-		TestPreparation.prepareDatabase();
 		mongoConnector = new MongoConnector(DATABASE_NAME);
+//		DatabasePreparation preparation = new DatabasePreparation(mongoConnector);
+		TestPreparation preparation = new TestPreparation(DATABASE_NAME);
+		preparation.prepareDatabase();
 		kata = new Kata6(DATABASE_NAME);		
 	}
 	

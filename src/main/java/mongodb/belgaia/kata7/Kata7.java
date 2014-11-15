@@ -1,10 +1,5 @@
 package mongodb.belgaia.kata7;
 
-import java.util.List;
-
-import org.junit.Assert;
-
-import com.mongodb.DBObject;
 
 
 
@@ -23,23 +18,56 @@ public class Kata7 {
 	
 	public void startKata7() {
 		
-		System.out.println("Erstelle Index und vergleiche Geschwindigkeit.");
+		System.out.println("Create Index for Queries and compare execution time.");
 		System.out.println("##############################################");
-		System.out.println("");
-		System.out.println("Abfrage 'RoboFly mit Status ungleich OK'");
 		
-		long difference1 = getDurationOfExecutionForGettingRoboFliesOfDifferingStatus();
-		System.out.println("Difference of execution with and without index (in ms): " + difference1);
+		System.out.println("Query for getting Roboflies with status different than OK.");
+		System.out.println("Execution without index took " + getDurationOfExecutionForGettingRobofliesWithStatusDifferentThanOk(false) + " ms");
+		System.out.println("Execution with index took " + getDurationOfExecutionForGettingRobofliesWithStatusDifferentThanOk(true) + " ms");
+
+		System.out.println("----------------------------------------------");
+
+		System.out.println("Query for getting count of roboflies of type fly.");
+		System.out.println("Execution without index took " + getDurationOfExecutionForGettingCountOfRobofliesTypeFly(false) + " ms");
+		System.out.println("Execution with index took " + getDurationOfExecutionForGettingCountOfRobofliesTypeFly(true) + " ms");
+		
+		System.out.println("----------------------------------------------");
+
+		System.out.println("Query for calculating average of sound intensity.");
+		System.out.println("Execution without index took " + getDurationOfExecutionForCalculatingAverageOfSoundIntensity(false) + " ms");
+		System.out.println("Execution with index took " + getDurationOfExecutionForCalculatingAverageOfSoundIntensity(true) + " ms");	
 	}
 	
-	// FIXME: wrong logic -- this is not the difference, its the duration of only one execution
-	private long getDurationOfExecutionForGettingRoboFliesOfDifferingStatus() {
+	private long getDurationOfExecutionForGettingRobofliesWithStatusDifferentThanOk(boolean withIndex) {
 		
-		boolean withIndex = true;
+		if(withIndex) {
+			mongoConnector.createIndexOnRoboFlyStatus();
+		}
+		
 		long start = System.currentTimeMillis();
+		mongoConnector.getRoboFliesByDifferingStatus(RoboFlyStatus.OK);
+		return System.currentTimeMillis() - start;
+	}
+	
+	private long getDurationOfExecutionForGettingCountOfRobofliesTypeFly(boolean withIndex) {
 		
-		mongoConnector.getRoboFliesByDifferingStatus(RoboFlyStatus.OK, withIndex);
+		if(withIndex) {
+			mongoConnector.createIndexOnRoboFlyType();
+		}
 		
+		long start = System.currentTimeMillis();
+		mongoConnector.getCountOfRoboFlies(RoboFlyType.FLY);
+		return System.currentTimeMillis() - start;		
+	}
+	
+	private long getDurationOfExecutionForCalculatingAverageOfSoundIntensity(boolean withIndex) {
+		
+		if(withIndex) {
+			mongoConnector.createIndexOnSoundIntensity();
+		}
+		
+		long start = System.currentTimeMillis();
+		mongoConnector.calculateAverageOfSoundIntensity();
 		return System.currentTimeMillis() - start;
 	}
 }

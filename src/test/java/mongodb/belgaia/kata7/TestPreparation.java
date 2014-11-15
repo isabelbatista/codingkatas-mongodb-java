@@ -28,19 +28,18 @@ class TestPreparation {
 	}
 	
 	private void importDataFiles() {
-		String chargingDataFile = "src/test/resources/kata6/charging_data.csv";
-		String profilesFile = "src/test/resources/kata6/profiles.csv";
-		String robofliesFile = "src/test/resources/kata6/roboflies.csv";
+		String profilesFile = "src/test/resources/kata7/profiles.csv";
+		String robofliesFile = "src/test/resources/kata7/roboflies.csv";
+		String measurementsFile = "src/test/resources/kata7/measurements.csv";
 				
-		connector.importData2MongoDb(chargingDataFile, "charging");
 		connector.importData2MongoDb(profilesFile, "profiles");
 		connector.importData2MongoDb(robofliesFile, "roboflies");
+		connector.importData2MongoDb(measurementsFile, "measurements");
 	}
 	
 	private void addDocumentReferences() {
 		
 		List<DBObject> roboFlies = getAllRoboflies();
-		List<DBObject> chargingSets = getAllChargingSets();		
 		
 		for(DBObject roboFly : roboFlies) {
 			String roboFlyId = (String) roboFly.get("_id");
@@ -65,28 +64,18 @@ class TestPreparation {
 			}
 		}
 		
-		for(DBObject chargingSet : chargingSets) {
-			String chargingSetId = (String) chargingSet.get("_id");
+		List<DBObject> measurements = getAllMeasurements();
+
+		for(DBObject measurement : measurements) {
+			String measurementId = (String) measurement.get("_id");
 			
-			if(chargingSetId.equals("charging_set_1")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_1");
-			} else if (chargingSetId.equals("charging_set_2")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_2");
-			} else if (chargingSetId.equals("charging_set_3")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_3");
-			} else if (chargingSetId.equals("charging_set_4")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_4");
-			} else if (chargingSetId.equals("charging_set_5")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_5");
-			} else if (chargingSetId.equals("charging_set_6")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_6");
-			} else if (chargingSetId.equals("charging_set_7")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_7");
-			} else if (chargingSetId.equals("charging_set_8")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_8");
-			} else if (chargingSetId.equals("charging_set_9")) {
-				connector.addDocReferenceForCharges((String) chargingSet.get("_id"), "RoboFly_ID_9");
-			}
+			if(measurementId.equals("measurement_average_1")) {
+				connector.addDocReferenceForMeasurement2RoboFly(measurementId, "RoboFly_ID_1");
+			} else if(measurementId.equals("measurement_average_2")) {
+				connector.addDocReferenceForMeasurement2RoboFly(measurementId, "RoboFly_ID_2");
+			} else if(measurementId.equals("measurement_average_3")) {
+				connector.addDocReferenceForMeasurement2RoboFly(measurementId, "RoboFly_ID_3");
+			} 
 		}
 	}
 	
@@ -94,7 +83,7 @@ class TestPreparation {
 		return connector.getRoboflies();
 	}
 	
-	private List<DBObject> getAllChargingSets() {
-		return connector.getChargingSets();
+	private List<DBObject> getAllMeasurements() {
+		return connector.getMeasurements();
 	}
 }

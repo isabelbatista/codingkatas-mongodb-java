@@ -14,7 +14,6 @@ import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
 
-// TODO: Don't remove type from robofly. Need to be a DBRef to the correct profile.
 public class Kata3 {
 	
 	private static final String DATABASE_NAME = "mobilerobotics";

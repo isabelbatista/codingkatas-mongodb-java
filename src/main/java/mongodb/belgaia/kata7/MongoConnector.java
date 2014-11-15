@@ -3,8 +3,10 @@ package mongodb.belgaia.kata7;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.mongodb.AggregationOutput;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -19,7 +21,7 @@ class MongoConnector {
 	
 	private DBCollection robofliesCollection;
 	private DBCollection profilesCollection;
-	private DBCollection chargingCollection;
+	private DBCollection measurementCollection;
 
 	private Mongo client;
 	private DB database;
@@ -30,7 +32,6 @@ class MongoConnector {
 			database = client.getDB(DATABASE_NAME);
 			initDatabaseElements();
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -55,7 +56,6 @@ class MongoConnector {
 											 + " --type " + exportType
 											 + " --file " + fileName
 											 + " --headerline";
-		
 		try {
 			Runtime.getRuntime().exec(mongoimportCommand);
 		} catch (IOException e) {
@@ -64,17 +64,14 @@ class MongoConnector {
 	}
 	
 	public void addDocReferenceForProfiles(String roboFlyId, String profileType) {
-		
 		DBObject profile = profilesCollection.findOne(new BasicDBObject("type", profileType));
 		DBRef reference = new DBRef(database, "profiles", (String) profile.get("_id"));
 		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
 	}
 	
-	public void addDocReferenceForCharges(String chargingSetId, String roboFlyId) {
-		
-		DBObject roboFly = robofliesCollection.findOne(new BasicDBObject("_id", roboFlyId));
-		DBRef reference = new DBRef(database, "roboflies", (String) roboFly.get("_id"));
-		chargingCollection.update(new BasicDBObject("_id", chargingSetId), new BasicDBObject("$set", new BasicDBObject("roboFlyRef", reference)));
+	public void addDocReferenceForMeasurement2RoboFly(String measurementId, String roboFlyId) {
+		DBRef reference = new DBRef(database, "roboflies", roboFlyId);
+		measurementCollection.update(new BasicDBObject("_id", measurementId), new BasicDBObject("$set", new BasicDBObject("roboFlyRef", reference)));
 	}
 	
 	public List<DBObject> getRoboflies() {
@@ -87,15 +84,19 @@ class MongoConnector {
 		return roboflies;
 	}
 	
-	public List<DBObject> getRoboFliesByDifferingStatus(RoboFlyStatus status, boolean withIndex) {
+	public List<DBObject> getMeasurements() {
+		DBCursor measurementCursor = measurementCollection.find();
+		List<DBObject> measurements = new ArrayList<DBObject>();
+		
+		while(measurementCursor.hasNext()) {
+			measurements.add(measurementCursor.next());
+		}
+		return measurements;
+	}
+	
+	public List<DBObject> getRoboFliesByDifferingStatus(RoboFlyStatus status) {
 		
 		DBObject query = new BasicDBObject("status", new BasicDBObject("$ne", status.name));
-
-		if(withIndex) {
-			// TODO: create Index
-			createIndexOn(robofliesCollection, "status");
-		}
-		
 		DBCursor result = robofliesCollection.find(query);
 		
 		List<DBObject> roboFlies = new ArrayList<DBObject>();
@@ -105,29 +106,66 @@ class MongoConnector {
 		return roboFlies;
 	}
 	
-	public List<DBObject> getChargingSets() {
-		DBCursor chargingCursor = chargingCollection.find();
-		List<DBObject> charging = new ArrayList<DBObject>();
+	public Double calculateAverageOfSoundIntensity() {
+		DBObject groupFields = new BasicDBObject("_id", "allRoboFlies");
+		groupFields.put("average", new BasicDBObject("$avg", "$" + "soundIntensity"));
+		DBObject group = new BasicDBObject("$group", groupFields);
 		
-		while(chargingCursor.hasNext()) {
-			charging.add(chargingCursor.next());
+		AggregationOutput output = measurementCollection.aggregate(group);
+		
+		if (output != null) {
+			Iterator<DBObject> resultIterator = output.results().iterator();
+			if (resultIterator.hasNext()) {
+				return (Double) resultIterator.next().get("average");
+			}
 		}
-		return charging;
+		return new Double(0.0);
 	}
 	
+	public void createIndexOnRoboFlyStatus() {
+		createIndexOn(robofliesCollection, "status");
+	}
+	
+	public int getCountOfRoboFlies(RoboFlyType type) {
+		
+		String roboFlyType = convertRoboFlyType2ProfileId(type);
+		DBRef typeReference = new DBRef(database, "profiles", roboFlyType);
+		DBObject query = new BasicDBObject("typeRef", typeReference);
+		DBCursor roboFlyCursor = robofliesCollection.find(query);
+		return roboFlyCursor.size();
+	}
+
+	public void createIndexOnRoboFlyType() {
+		createIndexOn(robofliesCollection, "typeRef");
+		createIndexOn(profilesCollection, "type");
+	}
+
+	public void createIndexOnSoundIntensity() {
+		createIndexOn(measurementCollection, "soundIntensity");		
+	}
+
 	public void dropDatabase() {
 		database.dropDatabase();
 	}
 	
-	private void createIndexOn(DBCollection collectionName, String fieldName) {
-		collectionName.createIndex(new BasicDBObject(fieldName, 1));
+	private void createIndexOn(DBCollection collection, String fieldName) {
+		collection.createIndex(new BasicDBObject(fieldName, 1));
+	}
+	
+	private String convertRoboFlyType2ProfileId(RoboFlyType type) {
+		String convertedType = null;
+		
+		if(type.equals(RoboFlyType.FLY)) {
+			convertedType = "ROBOFLY_ID_FLY";
+		}
+		return convertedType;
 	}
 	
 	private void initDatabaseElements() {
 		
 		robofliesCollection = database.getCollection("roboflies");
 		profilesCollection = database.getCollection("profiles");
-		chargingCollection = database.getCollection("charging");
+		measurementCollection = database.getCollection("measurements");
 	}
 
 }

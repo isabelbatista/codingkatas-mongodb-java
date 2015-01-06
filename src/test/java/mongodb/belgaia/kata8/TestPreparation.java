@@ -38,7 +38,7 @@ class TestPreparation {
 	
 	private void addDocumentReferences() {
 		
-		List<DBObject> roboFlies = connector.getRoboflies();
+		List<DBObject> roboFlies = connector.getRoboflyDocuments();
 		
 		for(DBObject roboFly : roboFlies) {
 			String roboFlyId = (String) roboFly.get("_id");

@@ -73,7 +73,18 @@ class MongoConnector {
 		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
 	}
 	
-	public List<DBObject> getRoboflies() {
+	public List<RoboFly> getRoboflies() {
+		DBCursor robofliesCursor = robofliesCollection.find();
+		List<RoboFly> roboflies = new ArrayList<RoboFly>();
+		
+		while(robofliesCursor.hasNext()) {
+			RoboFly roboFly = convertRoboFlyDocumentToRoboFly(robofliesCursor.next());
+			roboflies.add(roboFly);
+		}
+		return roboflies;
+	}
+	
+	public List<DBObject> getRoboflyDocuments() {
 		DBCursor robofliesCursor = robofliesCollection.find();
 		List<DBObject> roboflies = new ArrayList<DBObject>();
 		
@@ -149,6 +160,10 @@ class MongoConnector {
 		roboFlyBuilder.size(profile.getSize());
 		roboFlyBuilder.status(roboFlyStatus);
 		roboFlyBuilder.type(profile.getRoboflyType());
+		
+		if(roboFlyDocument.get("currentLocation") != null) {
+			
+		}
 		
 		return roboFlyBuilder.build();
 	}

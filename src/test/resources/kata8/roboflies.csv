@@ -1,8 +1,8 @@
 _id,name,constructionYear,status
 RoboFly_ID_1,Calliphora,2014,OK
-RoboFly_ID_2,Lucilia,2014,Out of service
+RoboFly_ID_2,Lucilia,2014,OK
 RoboFly_ID_3,Onesia,2014,OK
-RoboFly_ID_4,Ischnura,2014,Out of service
+RoboFly_ID_4,Ischnura,2014,OK
 RoboFly_ID_5,Calopteryx,2014,OK
 RoboFly_ID_6,Dahliana,2014,OK
 RoboFly_ID_7,Finlaya,2014,OK

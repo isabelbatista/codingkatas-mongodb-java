@@ -51,6 +51,10 @@ public class RoboFlyUpdater {
 		return coordinates;
 	}
 	
+	public Map<String, double[]> getCoordinateMap() {
+		return roboFlyPositions;
+	}
+	
 	private static Map<String, double[]> readCsvFile() throws IOException {
 		
 		Map<String, double[]> roboFlyPositions = new HashMap<String, double[]>();

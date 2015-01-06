@@ -14,9 +14,13 @@ public class TestKata8 {
 
 	private static final String DATABASE_NAME = "kataTest";
 	private MongoConnector connector;
+	private Kata8 kata;
 	
 	@Before
 	public void setUp() {
+		
+		kata = new Kata8(DATABASE_NAME);
+		
 		connector = new MongoConnector(DATABASE_NAME);
 		TestPreparation preparation = new TestPreparation(DATABASE_NAME);
 		preparation.prepareDatabase();
@@ -28,13 +32,17 @@ public class TestKata8 {
 	}
 	
 	@Test
-	public void shouldReturnRoboFlyOne() {
+	public void shouldUpdateAllRoboFliesWithCoordinates() {
 		
-		RoboFly roboFly = connector.getRoboFlyById("RoboFly_ID_1");
+		kata.updateRoboFliesWithCoordinates();
 		
-		Assert.assertNotNull(roboFly);
+		List<RoboFly> roboFlies = connector.getRoboflies();
+		
+		for(RoboFly roboFly : roboFlies) {
+//			roboFly.get
+		}
 	}
-
+	
 	@Ignore
 	@Test
 	public void shouldReturnRoboFliesNearestByTheBug() {

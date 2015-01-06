@@ -1,8 +1,5 @@
 package mongodb.belgaia.kata7;
 
-
-
-
 public class Kata7 {
 
 	private static final String DATABASE_NAME = "mobilerobotics";

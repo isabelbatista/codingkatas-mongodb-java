@@ -34,5 +34,4 @@ public class TestMongoConnector {
 		Assert.assertEquals(Status.OK.name, roboFly.getStatus().name);
 		Assert.assertEquals(RoboFly.Type.FLY.name, roboFly.getType().name);
 	}
-
 }

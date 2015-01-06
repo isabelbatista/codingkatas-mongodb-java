@@ -9,7 +9,13 @@ import java.util.Map;
 public class RoboFlyUpdater {
 
 	private static final String FILENAME = "src/main/resources/kata8/roboflyPositions.csv"; 
-			
+	
+	private static String inputFileName = FILENAME;
+	
+	public void setInputFileName(String customerInputFileName) {
+		inputFileName = customerInputFileName;
+	}
+	
 	public double[] getCoordinatesOfRoboFly(String roboFlyId) {
 		
 		double[] coordinates = new double[2];
@@ -34,7 +40,7 @@ public class RoboFlyUpdater {
 		
 		Map<String, double[]> roboFlyPositions = new HashMap<String, double[]>();
 		
-		FileReader fileReader = new FileReader(FILENAME);
+		FileReader fileReader = new FileReader(inputFileName);
 		BufferedReader br = new BufferedReader(fileReader);
 		String line;
 		int lineCounter = 0;

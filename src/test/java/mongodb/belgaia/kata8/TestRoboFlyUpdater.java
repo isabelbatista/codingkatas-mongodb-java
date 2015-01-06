@@ -19,7 +19,7 @@ public class TestRoboFlyUpdater {
 	
 	@Before
 	public void setUp() {
-		updater = new RoboFlyUpdater();
+		updater = new RoboFlyUpdater(TEST_DATABASE_NAME);
 		mongoConnector = new MongoConnector(TEST_DATABASE_NAME);
 		
 		TestPreparation preparation = new TestPreparation(TEST_DATABASE_NAME);
@@ -40,18 +40,15 @@ public class TestRoboFlyUpdater {
 		Assert.assertEquals(13.242619, coordinates[0], 0.0);
 	}
 	
-//	@Test
-//	public void shouldUpdateRoboFlyOneWithPlainCoordinateFields() {
-//		
-//		updater.updateRoboFlyWithCoordinates(TEST_ROBO_FLY_ID);
-//		
-//		RoboFly roboFly = mongoConnector.getRoboFly(TEST_ROBO_FLY_ID);
-//	}
-	
-	@Ignore
 	@Test
-	public void shouldUpdateRoboFlyOneWith2DIndexCoordinates() {
+	public void shouldUpdateRoboFlyOneWith2DCoordinates() {
 		
+		updater.updateRoboFlyWithCoordinates(TEST_ROBO_FLY_ID);
+		
+		double[] coordinates = mongoConnector.getRoboFlyCoordinates(TEST_ROBO_FLY_ID);
+		
+		Assert.assertNotNull(coordinates);
+		Assert.assertEquals(13.242619, coordinates[0], 0.00);
+		Assert.assertEquals(52.498092, coordinates[1], 0.00);
 	}
-
 }

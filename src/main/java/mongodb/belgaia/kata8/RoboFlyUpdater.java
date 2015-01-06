@@ -8,35 +8,50 @@ import java.util.Map;
 
 public class RoboFlyUpdater {
 
-	private static final String FILENAME = "src/main/resources/kata8/roboflyPositions.csv"; 
-	
+	private static final String FILENAME = "src/main/resources/kata8/roboflyPositions.csv"; 	
 	private static String inputFileName = FILENAME;
+	private static Map<String, double[]> roboFlyPositions;
+	
+	MongoConnector connector;
+	
+	static {
+		try {
+			roboFlyPositions = readCsvFile();
+		} catch (IOException e) {
+			System.out.println("Reading from csv file failed: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	public RoboFlyUpdater() {
+		connector = new MongoConnector();
+	}
+	
+	public RoboFlyUpdater(String databaseName) {
+		connector = new MongoConnector(databaseName);
+	}
 	
 	public void setInputFileName(String customerInputFileName) {
 		inputFileName = customerInputFileName;
 	}
 	
+	public void updateRoboFlyWithCoordinates(String roboFlyId) {
+		connector.addGeoIndexToRoboFly(roboFlyId, getCoordinatesOfRoboFly(roboFlyId));
+	}
+
 	public double[] getCoordinatesOfRoboFly(String roboFlyId) {
 		
 		double[] coordinates = new double[2];
 		
-		try {
-			Map<String, double[]> roboFlyPositions = readCsvFile();
-
-			for (Map.Entry<String, double[]> entry : roboFlyPositions.entrySet()) {
-				if(entry.getKey().equals(roboFlyId)) {
-					coordinates = entry.getValue();
-				}
+		for (Map.Entry<String, double[]> entry : roboFlyPositions.entrySet()) {
+			if(entry.getKey().equals(roboFlyId)) {
+				coordinates = entry.getValue();
 			}
-			
-		} catch (IOException e) {
-			System.out.println("Reading from csv file failed: " + e.getMessage());
-			e.printStackTrace();
 		}
 		return coordinates;
 	}
 	
-	private Map<String, double[]> readCsvFile() throws IOException {
+	private static Map<String, double[]> readCsvFile() throws IOException {
 		
 		Map<String, double[]> roboFlyPositions = new HashMap<String, double[]>();
 		
@@ -45,7 +60,6 @@ public class RoboFlyUpdater {
 		String line;
 		int lineCounter = 0;
 		while((line = br.readLine()) != null) {
-			System.out.println(line);
 
 			if(lineCounter >= 1) {
 				String[] tokens = line.split(",");
@@ -62,5 +76,4 @@ public class RoboFlyUpdater {
 		
 		return roboFlyPositions;
 	}
-
 }

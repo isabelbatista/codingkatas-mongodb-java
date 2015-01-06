@@ -5,8 +5,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mongodb.belgaia.kata8.RoboFly.Status;
-
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -18,6 +17,7 @@ import com.mongodb.Mongo;
 class MongoConnector {
 	
 	private static final String DATABASE_NAME = "mobilerobotics";
+	private static final String COORDINATES_FIELD_NAME = "currentLocation";
 
 	private Mongo client;
 	private DB database;
@@ -112,6 +112,33 @@ class MongoConnector {
 		return null;
 	}
 	
+	public void addGeoIndexToRoboFly(String roboFlyId, double[] longAndLat) {
+		
+		BasicDBList coordinates = new BasicDBList();
+		coordinates.put(0, longAndLat[0]);
+		coordinates.put(1, longAndLat[1]);
+		
+		DBObject searchQuery = new BasicDBObject("_id", roboFlyId);
+		DBObject roboFlyDocument = robofliesCollection.findOne(searchQuery);
+		
+		roboFlyDocument.put(COORDINATES_FIELD_NAME, new BasicDBObject("type", "Point").append("coordinates", coordinates));
+		
+		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), roboFlyDocument);
+	}
+	
+	public double[] getRoboFlyCoordinates(String roboFlyId) {
+		
+		DBObject searchQuery = new BasicDBObject("_id", roboFlyId);
+		DBObject roboFly = robofliesCollection.findOne(searchQuery);
+		
+		DBObject coordinates = (DBObject) roboFly.get(COORDINATES_FIELD_NAME);
+		BasicDBList coordinateList = (BasicDBList) coordinates.get("coordinates");
+		
+		double[] coordinateArray = { (Double) coordinateList.get(0), (Double) coordinateList.get(1)};
+		
+ 		return coordinateArray;
+	}
+	
 	public List<DBObject> addGeoIndexToBugroute() {
 		bugrouteCollection.createIndex(new BasicDBObject("loc", "2dsphere"));
 		return bugrouteCollection.getIndexInfo();
@@ -151,4 +178,6 @@ class MongoConnector {
 		
 		return profile;
 	}
+	
+	
 }

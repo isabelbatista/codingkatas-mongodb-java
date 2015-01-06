@@ -29,7 +29,6 @@ public class TestMongoConnector {
 		
 		RoboFly roboFly = connector.getRoboFlyById("RoboFly_ID_1");
 		
-		
 		Assert.assertNotNull(roboFly);
 		Assert.assertEquals("RoboFly_ID_1", roboFly.getId());
 		Assert.assertEquals(Status.OK.name, roboFly.getStatus().name);

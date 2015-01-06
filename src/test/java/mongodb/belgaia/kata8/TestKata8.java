@@ -26,6 +26,14 @@ public class TestKata8 {
 	public void tearDown() {
 //		connector.dropDatabase();
 	}
+	
+	@Test
+	public void shouldReturnRoboFlyOne() {
+		
+		RoboFly roboFly = connector.getRoboFlyById("RoboFly_ID_1");
+		
+		Assert.assertNotNull(roboFly);
+	}
 
 	@Test
 	public void shouldAddGeoIndexToBugroute() {

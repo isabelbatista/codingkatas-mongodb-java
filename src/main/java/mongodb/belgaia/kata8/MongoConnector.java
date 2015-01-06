@@ -5,6 +5,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mongodb.belgaia.kata8.RoboFly.Status;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -21,7 +23,6 @@ class MongoConnector {
 	private DB database;
 	
 	private DBCollection robofliesCollection;
-	private DBCollection roboflyStationsCollection;
 	private DBCollection bugrouteCollection;
 	
 	public MongoConnector() {
@@ -63,26 +64,18 @@ class MongoConnector {
 	public void dropDatabase() {
 		database.dropDatabase();
 	}
-	
-	public List<DBObject> getAllRoboFlyStations() {
-		DBCursor roboFlyStationCursor = roboflyStationsCollection.find();
-		
-		List<DBObject> roboFlyStations = new ArrayList<DBObject>();
-		while(roboFlyStationCursor.hasNext()) {
-			roboFlyStations.add(roboFlyStationCursor.next());
-		}
-		return roboFlyStations;
-	}
-	
-	public void addDocReferenceForRoboFly2Station(String stationId, String roboFlyId) {
-		DBRef reference = new DBRef(database, "roboflies", roboFlyId);
-		roboflyStationsCollection.update(new BasicDBObject("_id", stationId), new BasicDBObject("$set", new BasicDBObject("roboFlyRef", reference)));
-	}
 
 	private void initDatabaseElements() {	
 		robofliesCollection = database.getCollection("roboflies");
-		roboflyStationsCollection = database.getCollection("roboflystations");
-		bugrouteCollection = database.getCollection("bugroute");
+	}
+	
+	public RoboFly getRoboFlyById(String roboFlyId) {
+		
+		DBObject searchQuery = new BasicDBObject();
+		searchQuery.put("_id", roboFlyId);
+		
+		DBObject roboFlyDocument = robofliesCollection.findOne(searchQuery);
+		return convertRoboFlyDocumentToRoboFly(roboFlyDocument);
 	}
 
 	public List<DBObject> findRoboFliesNearByBug(int countOfFlies) {
@@ -95,8 +88,24 @@ class MongoConnector {
 		return bugrouteCollection.getIndexInfo();
 	}
 	
-	public List<DBObject> addGeoIndexForRoboFlyStations() {
-		roboflyStationsCollection.createIndex(new BasicDBObject("loc", "2dsphere"));
-		return roboflyStationsCollection.getIndexInfo();
+	private RoboFly convertRoboFlyDocumentToRoboFly(DBObject roboFlyDocument) {
+				
+		String id = (String) roboFlyDocument.get("_id");
+		String name = (String) roboFlyDocument.get("name");
+		int constructionYear = (Integer) roboFlyDocument.get("constructionYear");
+//		int serviceTime = (Integer) roboFlyDocument.get("serviceTime");
+//		int size = (Integer) roboFlyDocument.get("size");
+				
+		RoboFly.Status roboFlyStatus = RoboFly.Status.valueOf((String) roboFlyDocument.get("status"));
+//		RoboFly.Type roboFlyType = RoboFly.Type.valueOf((String) roboFlyDocument.get("type"));
+		
+		RoboFly.Builder roboFlyBuilder = new RoboFly.Builder(id, name);
+		roboFlyBuilder.constructionYear(constructionYear);
+//		roboFlyBuilder.serviceTime(serviceTime);
+//		roboFlyBuilder.size(size);
+		roboFlyBuilder.status(roboFlyStatus);
+//		roboFlyBuilder.type(roboFlyType);
+		
+		return roboFlyBuilder.build();
 	}
 }

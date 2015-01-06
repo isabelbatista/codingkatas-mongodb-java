@@ -22,6 +22,8 @@ public class Kata8 {
 	public void updateRoboFliesWithCoordinates() {
 		Map<String, double[]> coordinateMap = roboFlyUpdater.getCoordinateMap();
 		
-		
+		for(Map.Entry<String, double[]> entry : coordinateMap.entrySet()) {
+			mongoConnector.addGeoIndexToRoboFly(entry.getKey(), entry.getValue());
+		}
 	}
 }

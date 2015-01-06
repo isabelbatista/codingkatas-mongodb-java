@@ -28,7 +28,7 @@ public class TestKata8 {
 	
 	@After
 	public void tearDown() {
-		connector.dropDatabase();
+//		connector.dropDatabase();
 	}
 	
 	@Test
@@ -36,10 +36,12 @@ public class TestKata8 {
 		
 		kata.updateRoboFliesWithCoordinates();
 		
-		List<RoboFly> roboFlies = connector.getRoboflies();
+		List<DBObject> roboFlies = connector.getRoboflyDocuments();
 		
-		for(RoboFly roboFly : roboFlies) {
-//			roboFly.get
+		for(DBObject roboFly : roboFlies) {
+			String roboFlyId = (String) roboFly.get("_id");
+			double[] coordinates = connector.getRoboFlyCoordinates(roboFlyId);
+			Assert.assertNotNull(coordinates);
 		}
 	}
 	

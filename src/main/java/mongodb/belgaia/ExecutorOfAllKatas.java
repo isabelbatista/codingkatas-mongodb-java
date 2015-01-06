@@ -8,6 +8,7 @@ import mongodb.belgaia.kata4.Kata4;
 import mongodb.belgaia.kata5.Kata5;
 import mongodb.belgaia.kata6.Kata6;
 import mongodb.belgaia.kata7.Kata7;
+import mongodb.belgaia.kata8.Kata8;
 
 /**
  * Class to run all kata solutions from the book "Coding Katas for MongoDB".
@@ -98,6 +99,16 @@ public class ExecutorOfAllKatas {
 		kataSolution.startKata7();
 	}
 	
+	private void startKataEight() {
+		System.out.println("Executing Kata 8");
+		System.out.println("################");
+		
+		Kata8 kataSolution = new Kata8();
+		kataSolution.startKata8();
+	}
+	
+	
+	
 	public static final void main (String[] args) {
 		
 		try {
@@ -109,6 +120,7 @@ public class ExecutorOfAllKatas {
 			executor.startKataFive();
 			executor.startKataSix();
 			executor.startKataSeven();
+			executor.startKataEight();
 		} catch (CollectionDoesNotExistExc e) {
 			e.printStackTrace();
 		}

@@ -26,4 +26,14 @@ public class Kata8 {
 			mongoConnector.addGeoIndexToRoboFly(entry.getKey(), entry.getValue());
 		}
 	}
+	
+	public void startKata8() {
+		
+		System.out.println("");
+		System.out.println("Update roboflies with current position coordinates (2D index).");
+		System.out.println("##############################################");
+		System.out.println("");
+		
+		updateRoboFliesWithCoordinates();	
+	}
 }

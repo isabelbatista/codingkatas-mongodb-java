@@ -23,6 +23,7 @@ class MongoConnector {
 	private DB database;
 	
 	private DBCollection robofliesCollection;
+	private DBCollection profilesCollection;
 	private DBCollection bugrouteCollection;
 	
 	public MongoConnector() {
@@ -64,9 +65,37 @@ class MongoConnector {
 	public void dropDatabase() {
 		database.dropDatabase();
 	}
+	
+	public void addDocReferenceForProfiles(String roboFlyId, String profileType) {
+		
+		DBObject profile = profilesCollection.findOne(new BasicDBObject("type", profileType));
+		DBRef reference = new DBRef(database, "profiles", (String) profile.get("_id"));
+		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
+	}
+	
+	public List<DBObject> getRoboflies() {
+		DBCursor robofliesCursor = robofliesCollection.find();
+		List<DBObject> roboflies = new ArrayList<DBObject>();
+		
+		while(robofliesCursor.hasNext()) {
+			roboflies.add(robofliesCursor.next());
+		}
+		return roboflies;
+	}
+	
+	public List<DBObject> getProfiles() {
+		DBCursor profilesCursor = profilesCollection.find();
+		List<DBObject> profiles = new ArrayList<DBObject>();
+		
+		while(profilesCursor.hasNext()) {
+			profiles.add(profilesCursor.next());
+		}
+		return profiles;
+	}
 
 	private void initDatabaseElements() {	
 		robofliesCollection = database.getCollection("roboflies");
+		profilesCollection = database.getCollection("profiles");
 	}
 	
 	public RoboFly getRoboFlyById(String roboFlyId) {
@@ -90,22 +119,36 @@ class MongoConnector {
 	
 	private RoboFly convertRoboFlyDocumentToRoboFly(DBObject roboFlyDocument) {
 				
+		Profile profile = getRoboFlyProfileFromRoboFlyDocument(roboFlyDocument);
+		
 		String id = (String) roboFlyDocument.get("_id");
 		String name = (String) roboFlyDocument.get("name");
 		int constructionYear = (Integer) roboFlyDocument.get("constructionYear");
-//		int serviceTime = (Integer) roboFlyDocument.get("serviceTime");
-//		int size = (Integer) roboFlyDocument.get("size");
-				
 		RoboFly.Status roboFlyStatus = RoboFly.Status.valueOf((String) roboFlyDocument.get("status"));
-//		RoboFly.Type roboFlyType = RoboFly.Type.valueOf((String) roboFlyDocument.get("type"));
 		
 		RoboFly.Builder roboFlyBuilder = new RoboFly.Builder(id, name);
 		roboFlyBuilder.constructionYear(constructionYear);
-//		roboFlyBuilder.serviceTime(serviceTime);
-//		roboFlyBuilder.size(size);
+		roboFlyBuilder.serviceTime(profile.getServiceTime());
+		roboFlyBuilder.size(profile.getSize());
 		roboFlyBuilder.status(roboFlyStatus);
-//		roboFlyBuilder.type(roboFlyType);
+		roboFlyBuilder.type(profile.getRoboflyType());
 		
 		return roboFlyBuilder.build();
+	}
+	
+	private Profile getRoboFlyProfileFromRoboFlyDocument(DBObject roboFly) {
+		
+		DBRef databaseReference = (DBRef) roboFly.get("typeRef");
+		DBObject profileDocument = profilesCollection.findOne(databaseReference.getId());
+	
+		Profile profile = new Profile();
+		profile.setId((String) profileDocument.get("_id"));
+		profile.setServiceTime((Integer) profileDocument.get("serviceTime"));
+		profile.setSize((Integer) profileDocument.get("size"));
+		
+		RoboFly.Type roboFlyType = RoboFly.Type.valueOf((String) profileDocument.get("type"));
+		profile.setRoboflyType(roboFlyType);
+		
+		return profile;
 	}
 }

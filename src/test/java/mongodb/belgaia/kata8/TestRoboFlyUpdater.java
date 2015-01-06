@@ -1,5 +1,6 @@
 package mongodb.belgaia.kata8;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,7 +22,15 @@ public class TestRoboFlyUpdater {
 		updater = new RoboFlyUpdater();
 		mongoConnector = new MongoConnector(TEST_DATABASE_NAME);
 		
+		TestPreparation preparation = new TestPreparation(TEST_DATABASE_NAME);
+		preparation.prepareDatabase();
+		
 		updater.setInputFileName(INPUT_FILENAME);
+	}
+	
+	@After
+	public void tearDown() {
+		mongoConnector.dropDatabase();
 	}
 	
 	@Test

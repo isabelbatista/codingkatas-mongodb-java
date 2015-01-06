@@ -1,5 +1,8 @@
 package mongodb.belgaia.kata8;
 
+import java.util.List;
+import com.mongodb.DBObject;
+
 class TestPreparation {
 	
 	private static final String DATABASE_NAME = "kataTest";
@@ -18,12 +21,42 @@ class TestPreparation {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}		
+		}	
+		
+		addDocumentReferences();
 	}
 	
 	private void importDataFiles() {
 		String robofliesFile = "src/test/resources/kata8/roboflies.csv";
+		String profilesFile = "src/test/resources/kata8/profiles.csv";
+
+		connector.importData2MongoDb(robofliesFile, "roboflies");
+		connector.importData2MongoDb(profilesFile, "profiles");
 		
-		connector.importData2MongoDb(robofliesFile, "roboflies");		
+	}
+	
+	private void addDocumentReferences() {
+		
+		List<DBObject> roboFlies = connector.getRoboflies();
+		List<DBObject> profileSets = connector.getProfiles();		
+		
+		for(DBObject roboFly : roboFlies) {
+			String roboFlyId = (String) roboFly.get("_id");
+			if(roboFlyId.equals("RoboFly_ID_1")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.FLY.name);
+			} else if (roboFlyId.equals("RoboFly_ID_2")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.FLY.name);
+			} else if (roboFlyId.equals("RoboFly_ID_3")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.FLY.name);
+			} else if (roboFlyId.equals("RoboFly_ID_4")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.DRAGONFLY.name);
+			} else if (roboFlyId.equals("RoboFly_ID_5")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.DRAGONFLY.name);
+			} else if (roboFlyId.equals("RoboFly_ID_6")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.MOSKITO.name);
+			} else if (roboFlyId.equals("RoboFly_ID_7")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.MOSKITO.name);
+			}
+		}
 	}
 }

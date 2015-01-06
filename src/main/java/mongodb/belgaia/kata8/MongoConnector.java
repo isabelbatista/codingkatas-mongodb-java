@@ -82,16 +82,6 @@ class MongoConnector {
 		}
 		return roboflies;
 	}
-	
-	public List<DBObject> getProfiles() {
-		DBCursor profilesCursor = profilesCollection.find();
-		List<DBObject> profiles = new ArrayList<DBObject>();
-		
-		while(profilesCursor.hasNext()) {
-			profiles.add(profilesCursor.next());
-		}
-		return profiles;
-	}
 
 	private void initDatabaseElements() {	
 		robofliesCollection = database.getCollection("roboflies");

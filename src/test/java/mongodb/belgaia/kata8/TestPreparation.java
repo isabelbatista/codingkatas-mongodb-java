@@ -1,6 +1,7 @@
 package mongodb.belgaia.kata8;
 
 import java.util.List;
+
 import com.mongodb.DBObject;
 
 class TestPreparation {
@@ -38,7 +39,6 @@ class TestPreparation {
 	private void addDocumentReferences() {
 		
 		List<DBObject> roboFlies = connector.getRoboflies();
-		List<DBObject> profileSets = connector.getProfiles();		
 		
 		for(DBObject roboFly : roboFlies) {
 			String roboFlyId = (String) roboFly.get("_id");

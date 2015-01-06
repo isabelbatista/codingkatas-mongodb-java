@@ -24,7 +24,7 @@ public class TestKata8 {
 	
 	@After
 	public void tearDown() {
-//		connector.dropDatabase();
+		connector.dropDatabase();
 	}
 	
 	@Test
@@ -35,18 +35,6 @@ public class TestKata8 {
 		Assert.assertNotNull(roboFly);
 	}
 
-//	@Test
-//	public void shouldAddGeoIndexToBugroute() {
-//		List<DBObject> indexInfo = connector.addGeoIndexToBugroute();
-//		
-//		DBObject keyInfo = indexInfo.get(0);
-//		Assert.assertEquals("2dsphere", keyInfo.get("loc"));
-//	}
-	
-	public void shouldAddGeoIndexToRoboFlyStations() {
-		
-	}
-	
 	@Ignore
 	@Test
 	public void shouldReturnRoboFliesNearestByTheBug() {

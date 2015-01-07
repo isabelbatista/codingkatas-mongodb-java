@@ -7,12 +7,14 @@ import java.util.List;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.mongodb.Mongo;
+import com.mongodb.QueryBuilder;
 
 class MongoConnector {
 	
@@ -108,11 +110,47 @@ class MongoConnector {
 		return convertRoboFlyDocumentToRoboFly(roboFlyDocument);
 	}
 
-	public List<DBObject> findRoboFliesNearByBug(int countOfFlies) {
+	public List<RoboFly> findRoboFliesNearByBug(double[] bugCoordinates, int countOfFlies) {
+	
+//	    QueryBuilder query = new QueryBuilder();
+//
+//	    query.near(bugCoordinates[0], bugCoordinates[1]);
+//	    DBCursor roboFlies = robofliesCollection.find(query.get());
 		
-		return null;
+//		DBObject query = BasicDBObjectBuilder.start()
+//			    .push("coordinates")
+////			        .add("$maxDistance", 100)
+//			        .push("$near")
+//			            .push("$geometry")
+//			                .add("type", "Point")
+//			                .add("coordinates", bugCoordinates)
+//			    .get();
+		
+		BasicDBList bugLocation = new BasicDBList();
+		bugLocation.put(0, bugCoordinates[0]);
+		bugLocation.put(1, bugCoordinates[1]);
+	
+		DBObject query = new BasicDBObject("currentLocation", new BasicDBObject("$near", bugLocation)
+								.append("$maxDistance", 500));
+		
+		DBCursor roboFlies = robofliesCollection.find(query);
+	    
+	    List<RoboFly> nearestRoboFlies = new ArrayList<RoboFly>();
+	    int roboFliesCounter = 0;
+	    
+	    while(roboFliesCounter < countOfFlies && roboFlies.hasNext()) {
+	    	nearestRoboFlies.add(convertRoboFlyDocumentToRoboFly(roboFlies.next()));
+	    	roboFliesCounter++;
+	    }
+		
+		return nearestRoboFlies;
 	}
 	
+	/**
+	 * Adds a new field for coordinates of the roboflies as mongodb legacy coordinates.
+	 * @param roboFlyId		robofly ID that has to be updated with coordinates field
+	 * @param longAndLat	the longitude and latitude array to store at the coordinates field
+	 */
 	public void addGeoIndexToRoboFly(String roboFlyId, double[] longAndLat) {
 		
 		BasicDBList coordinates = new BasicDBList();
@@ -122,7 +160,7 @@ class MongoConnector {
 		DBObject searchQuery = new BasicDBObject("_id", roboFlyId);
 		DBObject roboFlyDocument = robofliesCollection.findOne(searchQuery);
 		
-		roboFlyDocument.put(COORDINATES_FIELD_NAME, new BasicDBObject("type", "Point").append("coordinates", coordinates));
+		roboFlyDocument.put(COORDINATES_FIELD_NAME, coordinates);
 		
 		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), roboFlyDocument);
 	}
@@ -132,8 +170,7 @@ class MongoConnector {
 		DBObject searchQuery = new BasicDBObject("_id", roboFlyId);
 		DBObject roboFly = robofliesCollection.findOne(searchQuery);
 		
-		DBObject coordinates = (DBObject) roboFly.get(COORDINATES_FIELD_NAME);
-		BasicDBList coordinateList = (BasicDBList) coordinates.get("coordinates");
+		BasicDBList coordinateList = (BasicDBList) roboFly.get(COORDINATES_FIELD_NAME);
 		
 		double[] coordinateArray = { (Double) coordinateList.get(0), (Double) coordinateList.get(1)};
 		
@@ -161,10 +198,6 @@ class MongoConnector {
 		roboFlyBuilder.status(roboFlyStatus);
 		roboFlyBuilder.type(profile.getRoboflyType());
 		
-		if(roboFlyDocument.get("currentLocation") != null) {
-			
-		}
-		
 		return roboFlyBuilder.build();
 	}
 	
@@ -182,6 +215,10 @@ class MongoConnector {
 		profile.setRoboflyType(roboFlyType);
 		
 		return profile;
+	}
+
+	public void createGeoIndexForRoboflies() {
+		robofliesCollection.createIndex(new BasicDBObject("currentLocation", "2d"));
 	}
 	
 	

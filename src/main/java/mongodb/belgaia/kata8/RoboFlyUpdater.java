@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import mongodb.belgaia.kata1.RoboFliesPersistence;
+
 public class RoboFlyUpdater {
 
 	private static final String FILENAME = "src/main/resources/kata8/roboflyPositions.csv"; 	
@@ -31,12 +33,28 @@ public class RoboFlyUpdater {
 		connector = new MongoConnector(databaseName);
 	}
 	
+	public void updateRoboFliesWithCoordinatesAndSetGeoIndex() {
+		updateRoboFliesWithCoordinates();
+		addGeoIndexForRoboflies();
+	}
+	
+	private void addGeoIndexForRoboflies() {
+		connector.createGeoIndexForRoboflies();
+	}
+	
 	public void setInputFileName(String customerInputFileName) {
 		inputFileName = customerInputFileName;
 	}
 	
 	public void updateRoboFlyWithCoordinates(String roboFlyId) {
 		connector.addGeoIndexToRoboFly(roboFlyId, getCoordinatesOfRoboFly(roboFlyId));
+	}
+	
+	public void updateRoboFliesWithCoordinates() {
+		
+		for(Map.Entry<String, double[]> entry : roboFlyPositions.entrySet()) {
+			connector.addGeoIndexToRoboFly(entry.getKey(), entry.getValue());
+		}
 	}
 
 	public double[] getCoordinatesOfRoboFly(String roboFlyId) {
@@ -68,8 +86,8 @@ public class RoboFlyUpdater {
 			if(lineCounter >= 1) {
 				String[] tokens = line.split(",");
 				
-				double longitude = Double.valueOf(tokens[1]);
-				double latitude = Double.valueOf(tokens[2]);
+				double longitude = Double.parseDouble(tokens[1]);
+				double latitude = Double.parseDouble(tokens[2]);
 				double[] coordinates = {longitude, latitude};
 				
 				roboFlyPositions.put(tokens[0], coordinates);
@@ -80,4 +98,6 @@ public class RoboFlyUpdater {
 		
 		return roboFlyPositions;
 	}
+
+	
 }

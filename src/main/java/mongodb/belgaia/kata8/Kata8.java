@@ -1,6 +1,10 @@
 package mongodb.belgaia.kata8;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import com.mongodb.DBObject;
 
 
 public class Kata8 {
@@ -25,6 +29,17 @@ public class Kata8 {
 		for(Map.Entry<String, double[]> entry : coordinateMap.entrySet()) {
 			mongoConnector.addGeoIndexToRoboFly(entry.getKey(), entry.getValue());
 		}
+	}
+	
+	public List<String> findThreeRoboFliesNearToBug() {
+		int countOfFlies = 3;
+		double[] bugCoordinates = {13.241111f, 52.497222f};
+		
+//		List<RoboFly> mongoConnector.findRoboFliesNearByBug(bugCoordinates, countOfFlies);
+		 
+		List<String> nearRoboFlies = new ArrayList<String>();
+		 
+		 return nearRoboFlies;
 	}
 	
 	public void startKata8() {

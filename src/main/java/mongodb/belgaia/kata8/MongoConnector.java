@@ -111,20 +111,6 @@ class MongoConnector {
 	}
 
 	public List<RoboFly> findRoboFliesNearByBug(double[] bugCoordinates, int countOfFlies) {
-	
-//	    QueryBuilder query = new QueryBuilder();
-//
-//	    query.near(bugCoordinates[0], bugCoordinates[1]);
-//	    DBCursor roboFlies = robofliesCollection.find(query.get());
-		
-//		DBObject query = BasicDBObjectBuilder.start()
-//			    .push("coordinates")
-////			        .add("$maxDistance", 100)
-//			        .push("$near")
-//			            .push("$geometry")
-//			                .add("type", "Point")
-//			                .add("coordinates", bugCoordinates)
-//			    .get();
 		
 		BasicDBList bugLocation = new BasicDBList();
 		bugLocation.put(0, bugCoordinates[0]);
@@ -146,12 +132,19 @@ class MongoConnector {
 	}
 	
 	/**
-	 * Adds a new field for coordinates of the roboflies as mongodb legacy coordinates.
+	 * Adds a new field for coordinates of the roboflies and creates a new index of all
+	 * roboflies as 2D mongodb legacy coordinates.
 	 * @param roboFlyId		robofly ID that has to be updated with coordinates field
 	 * @param longAndLat	the longitude and latitude array to store at the coordinates field
 	 */
 	public void addGeoIndexToRoboFly(String roboFlyId, double[] longAndLat) {
 		
+		addGeoCoordinatesToRoboFly(roboFlyId, longAndLat);
+		createGeoIndexForRoboflies();
+	}
+
+	private void addGeoCoordinatesToRoboFly(String roboFlyId,
+			double[] longAndLat) {
 		BasicDBList coordinates = new BasicDBList();
 		coordinates.put(0, longAndLat[0]);
 		coordinates.put(1, longAndLat[1]);

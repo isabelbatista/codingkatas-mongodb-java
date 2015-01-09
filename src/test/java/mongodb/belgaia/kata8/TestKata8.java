@@ -54,8 +54,8 @@ public class TestKata8 {
 		List<String> roboFlies = kata.findThreeRoboFliesNearToBug();
 		
 		Assert.assertEquals(3, roboFlies.size());
-		Assert.assertEquals("RoboFly_ID_4", roboFlies.get(0));
+		Assert.assertEquals("RoboFly_ID_3", roboFlies.get(0));
 		Assert.assertEquals("RoboFly_ID_7", roboFlies.get(1));
-		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(2));
+		Assert.assertEquals("RoboFly_ID_5", roboFlies.get(2));
 	}
 }

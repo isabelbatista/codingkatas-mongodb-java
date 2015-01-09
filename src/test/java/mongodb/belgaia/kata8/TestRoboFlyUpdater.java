@@ -33,7 +33,7 @@ public class TestRoboFlyUpdater {
 	
 	@After
 	public void tearDown() {
-		mongoConnector.dropDatabase();
+//		mongoConnector.dropDatabase();
 	}
 	
 	@Test

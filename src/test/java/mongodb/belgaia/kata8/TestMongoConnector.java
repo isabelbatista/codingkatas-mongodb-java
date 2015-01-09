@@ -49,6 +49,6 @@ public class TestMongoConnector {
 		List<RoboFly> nearRoboFly = connector.findRoboFliesNearByBug(bugCoordinates, 1);
 		
 		Assert.assertEquals(1, nearRoboFly.size());
-		Assert.assertEquals("RoboFly_ID_4", nearRoboFly.get(0).getId());
+		Assert.assertEquals("RoboFly_ID_3", nearRoboFly.get(0).getId());
 	}
 }

@@ -55,5 +55,24 @@ public class Kata8 {
 		System.out.println("");
 		
 		updateRoboFliesWithCoordinates();	
+		
+		System.out.println("Find 3 roboflies near to the bug.");
+		System.out.println("#################################");
+		System.out.println("");
+		
+		List<String> roboFlies = findThreeRoboFliesNearToBug();
+		System.out.print("Near to the bug are: ");
+		
+		int counter = 0;
+		for(String roboFly : roboFlies) {
+			System.out.print(roboFly);
+						
+			counter++;
+			if(counter == 3) {
+				break;
+			}
+			
+			System.out.print(",");
+		}		
 	}
 }

@@ -56,6 +56,10 @@ class TestPreparation {
 				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.MOSKITO.name);
 			} else if (roboFlyId.equals("RoboFly_ID_7")) {
 				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.MOSKITO.name);
+			} else if (roboFlyId.equals("RoboFly_ID_8")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.COPEPOD.name);
+			} else if (roboFlyId.equals("RoboFly_ID_9")) {
+				connector.addDocReferenceForProfiles(roboFlyId, RoboFly.Type.COPEPOD.name);
 			}
 		}
 	}

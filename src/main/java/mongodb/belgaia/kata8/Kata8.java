@@ -72,7 +72,8 @@ public class Kata8 {
 				break;
 			}
 			
-			System.out.print(",");
-		}		
+			System.out.print(", ");
+		}
+		System.out.println("");
 	}
 }

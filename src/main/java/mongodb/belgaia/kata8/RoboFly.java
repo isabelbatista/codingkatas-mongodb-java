@@ -100,12 +100,30 @@ class RoboFly {
 	
 	// TODO: find a better solution for inserting enum type to the database
 	enum Status {
-		OK("OK");
+		OK("OK"), TO_BE_CALIBRATED("To be calibrated");
 		
+		String status;
 		String name;
 		
 		Status(String name) {
 			this.name = name;
+		}
+		
+		public static Status getStatusByName(String name) {
+			Status[] states = Status.values();
+			Status status = null;
+			
+			for(Status currentStatus : states) {
+				if(currentStatus.name.equals(name)) {
+					status = currentStatus;
+					break;
+				}
+			}
+			
+			if(status == null) {
+				throw new RuntimeException("Invalid robofly status: " + name);
+			}
+			return status;
 		}
 	}
 	

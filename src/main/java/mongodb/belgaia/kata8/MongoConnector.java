@@ -179,7 +179,8 @@ class MongoConnector {
 		String id = (String) roboFlyDocument.get("_id");
 		String name = (String) roboFlyDocument.get("name");
 		int constructionYear = (Integer) roboFlyDocument.get("constructionYear");
-		RoboFly.Status roboFlyStatus = RoboFly.Status.valueOf((String) roboFlyDocument.get("status"));
+				
+		RoboFly.Status roboFlyStatus = RoboFly.Status.getStatusByName((String) roboFlyDocument.get("status"));
 		
 		RoboFly.Builder roboFlyBuilder = new RoboFly.Builder(id, name);
 		roboFlyBuilder.constructionYear(constructionYear);

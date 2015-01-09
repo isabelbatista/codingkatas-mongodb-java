@@ -44,6 +44,13 @@ public class TestRoboFlyUpdater {
 		
 		updater.updateRoboFlyWithCoordinates(TEST_ROBO_FLY_ID);
 		
+		System.out.println("--- Waiting for some milliseconds to verify saving and updating roboflies ---");
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		double[] coordinates = mongoConnector.getRoboFlyCoordinates(TEST_ROBO_FLY_ID);
 		
 		Assert.assertNotNull(coordinates);

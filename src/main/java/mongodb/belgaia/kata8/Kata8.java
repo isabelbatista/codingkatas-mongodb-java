@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.mongodb.DBObject;
-
 
 public class Kata8 {
 
@@ -36,7 +34,6 @@ public class Kata8 {
 		
 		int countOfFlies = 3;
 		List<RoboFly> roboFlies = mongoConnector.findRoboFliesNearByBug(BUG_COORDINATES, countOfFlies);
-		 
 		
 		if(roboFlies.size() < countOfFlies) {
 			System.out.println("Found less than 3 roboflies near to the bug.");

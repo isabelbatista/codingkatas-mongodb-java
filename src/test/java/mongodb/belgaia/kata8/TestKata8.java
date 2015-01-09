@@ -5,7 +5,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.DBObject;
@@ -15,6 +14,7 @@ public class TestKata8 {
 	private static final String DATABASE_NAME = "kataTest";
 	private MongoConnector connector;
 	private Kata8 kata;
+	private RoboFlyUpdater updater;
 	
 	@Before
 	public void setUp() {
@@ -24,6 +24,9 @@ public class TestKata8 {
 		connector = new MongoConnector(DATABASE_NAME);
 		TestPreparation preparation = new TestPreparation(DATABASE_NAME);
 		preparation.prepareDatabase();
+		
+		updater = new RoboFlyUpdater(DATABASE_NAME);
+		updater.updateRoboFliesWithCoordinates();
 	}
 	
 	@After
@@ -45,8 +48,6 @@ public class TestKata8 {
 		}
 	}
 	
-	
-	@Ignore
 	@Test
 	public void shouldReturnRoboFliesCloseToTheBug() {
 		
@@ -56,6 +57,5 @@ public class TestKata8 {
 		Assert.assertEquals("RoboFly_ID_4", roboFlies.get(0));
 		Assert.assertEquals("RoboFly_ID_7", roboFlies.get(1));
 		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(2));
-		
 	}
 }

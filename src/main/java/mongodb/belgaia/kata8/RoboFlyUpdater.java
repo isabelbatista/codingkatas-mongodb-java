@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mongodb.belgaia.kata1.RoboFliesPersistence;
-
 public class RoboFlyUpdater {
 
 	private static final String FILENAME = "src/main/resources/kata8/roboflyPositions.csv"; 	

@@ -1,9 +1,13 @@
 package mongodb.belgaia.kata8;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.mongodb.DBObject;
 
 
 public class TestRoboFlyUpdater {
@@ -56,5 +60,27 @@ public class TestRoboFlyUpdater {
 		Assert.assertNotNull(coordinates);
 		Assert.assertEquals(13.242619, coordinates[0], 0.00);
 		Assert.assertEquals(52.498092, coordinates[1], 0.00);
+	}
+	
+	@Test
+	public void roboFliesShouldHave2dGeoIndexAfterUpdate() {
+		
+		updater.updateRoboFliesWithCoordinates();
+
+		List<DBObject> indexDocuments = mongoConnector.getIndexesOfCollection("roboflies");
+		
+		String valueOfRelevantIndex = "2d";
+		
+		for(DBObject indexDocument : indexDocuments) {
+			
+			DBObject index = (DBObject) indexDocument.get("key");
+			String indexValue = (String) index.get("currentLocation");
+			
+			if(indexValue != null) {
+				valueOfRelevantIndex = indexValue;
+			}
+		}
+		
+		Assert.assertEquals("2d", valueOfRelevantIndex);	
 	}
 }

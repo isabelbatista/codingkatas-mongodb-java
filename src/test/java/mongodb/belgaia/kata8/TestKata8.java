@@ -28,7 +28,7 @@ public class TestKata8 {
 	
 	@After
 	public void tearDown() {
-//		connector.dropDatabase();
+		connector.dropDatabase();
 	}
 	
 	@Test
@@ -45,13 +45,17 @@ public class TestKata8 {
 		}
 	}
 	
+	
 	@Ignore
 	@Test
-	public void shouldReturnRoboFliesNearestByTheBug() {
+	public void shouldReturnRoboFliesCloseToTheBug() {
 		
+		List<String> roboFlies = kata.findThreeRoboFliesNearToBug();
 		
-//		List<DBObject> roboFlies = 
+		Assert.assertEquals(3, roboFlies.size());
+		Assert.assertEquals("RoboFly_ID_4", roboFlies.get(0));
+		Assert.assertEquals("RoboFly_ID_7", roboFlies.get(1));
+		Assert.assertEquals("RoboFly_ID_2", roboFlies.get(2));
 		
-//		Assert.assertEquals("RoboFly_ID_4", roboFlies.get(0));
 	}
 }

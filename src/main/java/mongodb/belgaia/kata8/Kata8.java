@@ -10,6 +10,7 @@ import com.mongodb.DBObject;
 public class Kata8 {
 
 	private static final String DATABASE_NAME = "mobilerobotics";
+	private static final double[] BUG_COORDINATES = {13.237033, 52.499789};
 	private MongoConnector mongoConnector;
 	private RoboFlyUpdater roboFlyUpdater;
 	
@@ -32,14 +33,21 @@ public class Kata8 {
 	}
 	
 	public List<String> findThreeRoboFliesNearToBug() {
-		int countOfFlies = 3;
-		double[] bugCoordinates = {13.241111f, 52.497222f};
 		
-//		List<RoboFly> mongoConnector.findRoboFliesNearByBug(bugCoordinates, countOfFlies);
+		int countOfFlies = 3;
+		List<RoboFly> roboFlies = mongoConnector.findRoboFliesNearByBug(BUG_COORDINATES, countOfFlies);
 		 
+		
+		if(roboFlies.size() < countOfFlies) {
+			System.out.println("Found less than 3 roboflies near to the bug.");
+		}
+		
 		List<String> nearRoboFlies = new ArrayList<String>();
-		 
-		 return nearRoboFlies;
+		for(RoboFly roboFly : roboFlies) {
+			nearRoboFlies.add(roboFly.getId());
+		}
+		
+		return nearRoboFlies;
 	}
 	
 	public void startKata8() {

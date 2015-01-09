@@ -213,5 +213,7 @@ class MongoConnector {
 		robofliesCollection.createIndex(new BasicDBObject("currentLocation", "2d"));
 	}
 	
-	
+	public List<DBObject> getIndexesOfCollection(String collectionName) {
+		return robofliesCollection.getIndexInfo();
+	}	
 }

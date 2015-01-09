@@ -43,14 +43,13 @@ public class TestMongoConnector {
 		Assert.assertEquals(RoboFly.Type.FLY.name, roboFly.getType().name);
 	}
 	
-	@Ignore
 	@Test
 	public void shouldReturnOneRoboFlyNearToBugCoordinates() {
 		
-		double[] bugCoordinates = {13.241111, 52.497222};
+		double[] bugCoordinates = {13.237033, 52.499789};
 		List<RoboFly> nearRoboFly = connector.findRoboFliesNearByBug(bugCoordinates, 1);
 		
 		Assert.assertEquals(1, nearRoboFly.size());
-		Assert.assertEquals("RoboFly_ID_7", nearRoboFly.get(0).getId());
+		Assert.assertEquals("RoboFly_ID_4", nearRoboFly.get(0).getId());
 	}
 }

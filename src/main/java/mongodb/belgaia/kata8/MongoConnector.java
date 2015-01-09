@@ -130,8 +130,7 @@ class MongoConnector {
 		bugLocation.put(0, bugCoordinates[0]);
 		bugLocation.put(1, bugCoordinates[1]);
 	
-		DBObject query = new BasicDBObject("currentLocation", new BasicDBObject("$near", bugLocation)
-								.append("$maxDistance", 500));
+		DBObject query = new BasicDBObject("currentLocation", new BasicDBObject("$near", bugLocation));
 		
 		DBCursor roboFlies = robofliesCollection.find(query);
 	    

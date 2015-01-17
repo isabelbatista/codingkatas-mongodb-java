@@ -167,11 +167,6 @@ class MongoConnector {
  		return coordinateArray;
 	}
 	
-	public List<DBObject> addGeoIndexToBugroute() {
-		bugrouteCollection.createIndex(new BasicDBObject("loc", "2dsphere"));
-		return bugrouteCollection.getIndexInfo();
-	}
-	
 	private RoboFly convertRoboFlyDocumentToRoboFly(DBObject roboFlyDocument) {
 				
 		Profile profile = getRoboFlyProfileFromRoboFlyDocument(roboFlyDocument);

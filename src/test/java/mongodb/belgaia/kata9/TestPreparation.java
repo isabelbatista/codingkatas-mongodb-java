@@ -12,15 +12,15 @@ import com.mongodb.DBObject;
 class TestPreparation {
 	
 	private static final String DATABASE_NAME = "kataTest";
-	private static final String FILENAME = "src/test/resources/kata9/roboflyPositions.csv"; 	
-	private static String inputFileName = FILENAME;
 	private static Map<String, double[]> roboFlyPositions;
 
 	
 	private MongoConnector connector;
+	private CSVFileReader fileReader;
 	
 	public TestPreparation(String databaseName) {
 		connector = new MongoConnector(DATABASE_NAME);
+		fileReader = new CSVFileReader();
 	}
 	
 	public void prepareDatabase() {
@@ -36,21 +36,16 @@ class TestPreparation {
 		
 		addDocumentReferences();
 		
-		try {
-			roboFlyPositions = readCsvFile();
-			updateRoboFliesWithCoordinates();
-		} catch (IOException e) {
-			System.out.println("Failed to prepare data base with robo fly coordinates from CSV file: " + e.getMessage());
-		}
+		roboFlyPositions = fileReader.getContentOfRoboFliesPositionsCsv();
+		updateRoboFliesWithCoordinates();
 	}
 	
 	private void importDataFiles() {
 		String robofliesFile = "src/test/resources/kata9/roboflies.csv";
 		String profilesFile = "src/test/resources/kata9/profiles.csv";
-
-		connector.importData2MongoDb(robofliesFile, "roboflies");
-		connector.importData2MongoDb(profilesFile, "profiles");
 		
+		connector.importData2MongoDb(robofliesFile, "roboflies");
+		connector.importData2MongoDb(profilesFile, "profiles");		
 	}
 	
 	private void addDocumentReferences() {
@@ -88,29 +83,29 @@ class TestPreparation {
 		}
 	}
 	
-	private static Map<String, double[]> readCsvFile() throws IOException {
-		
-		Map<String, double[]> roboFlyPositions = new HashMap<String, double[]>();
-		
-		FileReader fileReader = new FileReader(inputFileName);
-		BufferedReader br = new BufferedReader(fileReader);
-		String line;
-		int lineCounter = 0;
-		while((line = br.readLine()) != null) {
-
-			if(lineCounter >= 1) {
-				String[] tokens = line.split(",");
-				
-				double longitude = Double.parseDouble(tokens[1]);
-				double latitude = Double.parseDouble(tokens[2]);
-				double[] coordinates = {longitude, latitude};
-				
-				roboFlyPositions.put(tokens[0], coordinates);
-			}
-			lineCounter++;
-		}
-		fileReader.close();
-		
-		return roboFlyPositions;
-	}
+//	private static Map<String, double[]> readCsvFile() throws IOException {
+//		
+//		Map<String, double[]> roboFlyPositions = new HashMap<String, double[]>();
+//		
+//		FileReader fileReader = new FileReader(inputFileName);
+//		BufferedReader br = new BufferedReader(fileReader);
+//		String line;
+//		int lineCounter = 0;
+//		while((line = br.readLine()) != null) {
+//
+//			if(lineCounter >= 1) {
+//				String[] tokens = line.split(",");
+//				
+//				double longitude = Double.parseDouble(tokens[1]);
+//				double latitude = Double.parseDouble(tokens[2]);
+//				double[] coordinates = {longitude, latitude};
+//				
+//				roboFlyPositions.put(tokens[0], coordinates);
+//			}
+//			lineCounter++;
+//		}
+//		fileReader.close();
+//		
+//		return roboFlyPositions;
+//	}
 }

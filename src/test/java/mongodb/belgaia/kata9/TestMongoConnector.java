@@ -1,9 +1,14 @@
 package mongodb.belgaia.kata9;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.mongodb.DBObject;
 
 public class TestMongoConnector {
 	
@@ -40,5 +45,32 @@ public class TestMongoConnector {
 		// verfiy
 		coordinatesFieldType = connector.getTypeOfRoboFlyCoordinatesIndex();
 		Assert.assertEquals("2dsphere", coordinatesFieldType);
+	}
+	
+	@Test
+	public void shouldCreateOneBugrouteDocumentInRoutesCollection() {
+		
+		connector.createBugRouteDocument(getDummyBugCoordinatesMap());
+		
+//		DBObject bugrouteDoc = connector.getBugRouteDocument();
+//		Assert.assertNotNull(bugrouteDoc);
+	}
+	
+	private Map<String, double[]> getDummyBugCoordinatesMap() {
+		
+		double[] pos1 = {13.239067,52.499475};
+		double[] pos2 = {13.241011,52.499425};
+		double[] pos3 = {13.241819,52.499925};
+		double[] pos4 = {13.241819,52.50021};
+		double[] pos5 = {13.238067,52.500447};
+		
+ 		Map<String, double[]> bugRoute = new HashMap<String, double[]>();
+		bugRoute.put("BUG_POSITION_1", pos1);
+		bugRoute.put("BUG_POSITION_2", pos2);
+		bugRoute.put("BUG_POSITION_3", pos3);
+		bugRoute.put("BUG_POSITION_4", pos4);
+		bugRoute.put("BUG_POSITION_5", pos5);
+		
+		return bugRoute;
 	}
 }

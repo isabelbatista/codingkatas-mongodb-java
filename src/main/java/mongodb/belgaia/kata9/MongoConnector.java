@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -25,7 +26,7 @@ class MongoConnector {
 	
 	private DBCollection robofliesCollection;
 	private DBCollection profilesCollection;
-	private DBCollection bugrouteCollection;
+	private DBCollection routesCollection;
 	
 	public MongoConnector() {
 		try {
@@ -66,6 +67,7 @@ class MongoConnector {
 	private void initDatabaseElements() {	
 		robofliesCollection = database.getCollection("roboflies");
 		profilesCollection = database.getCollection("profiles");
+		routesCollection = database.getCollection("routes");
 	}
 
 	public void dropDatabase() {
@@ -208,6 +210,7 @@ class MongoConnector {
 		robofliesCollection.dropIndex(ROBOFLY_COORDINATES_FIELD_NAME);
 	}
 
+	
 	public String getTypeOfRoboFlyCoordinatesIndex() {
 		
 		List<DBObject> indexInformation = robofliesCollection.getIndexInfo();
@@ -227,13 +230,42 @@ class MongoConnector {
 		
 		return typeOfIndex;
 	}
-	
-//	private DBObject findRoboFlyById(String roboFlyId) {
-//		
-//		DBObject searchQuery = new BasicDBObject();
-//		searchQuery.put("_id", roboFlyId);
-//		
-//		return robofliesCollection.findOne(searchQuery);
-//	}
-//	
+
+	public void createBugRouteDocument(Map<String, double[]> bugrouteCoordinates) {
+		
+		DBObject bugrouteDocument = new BasicDBObject("_id", "BUGROUTE_1");
+		DBObject location = new BasicDBObject("type", "Polygon");
+		
+		double[][] coordinates = createCoordinatesList(bugrouteCoordinates);
+		
+		DBObject coordinatesList = new BasicDBObject("coordinates", coordinates);
+		location.putAll(coordinatesList);
+		
+		bugrouteDocument.put("location", location);
+		
+		routesCollection.insert(bugrouteDocument);
+	}
+
+	private double[][] createCoordinatesList(
+			Map<String, double[]> bugrouteCoordinates) {
+		double[][] coordinates = new double[bugrouteCoordinates.size()+1][2];
+		int position = 0;
+		double[] firstCoordinate = null;
+		
+		for(Map.Entry<String, double[]> entry : bugrouteCoordinates.entrySet()) {
+			
+			double[] coordinatePair = entry.getValue();
+			if(position == 0) {
+				firstCoordinate = coordinatePair;
+			}
+			
+			coordinates[position] = coordinatePair;
+			position++;			
+		}
+		
+		if(firstCoordinate != null) {
+			coordinates[position] = firstCoordinate;
+		}
+		return coordinates;
+	}
 }

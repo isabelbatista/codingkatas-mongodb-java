@@ -1,6 +1,7 @@
 package mongodb.belgaia.kata9;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -52,8 +53,9 @@ public class TestMongoConnector {
 		
 		connector.createBugRouteDocument(getDummyBugCoordinatesMap());
 		
-//		DBObject bugrouteDoc = connector.getBugRouteDocument();
-//		Assert.assertNotNull(bugrouteDoc);
+		List<double[]> bugrouteCoordinates = connector.getBugRouteCoordinateList();
+		
+		Assert.assertEquals(6, bugrouteCoordinates.size());
 	}
 	
 	private Map<String, double[]> getDummyBugCoordinatesMap() {

@@ -17,6 +17,8 @@ import com.mongodb.Mongo;
 
 class MongoConnector {
 	
+	private static final String ROUTE_LOCATION_FIELD_KEY = "location";
+	private static final String ROUTE_COORDINATES_FIELD_KEY = "coordinates";
 	private static final String ROBOFLY_COORDINATES_FIELD_NAME = "currentLocation_2d";
 	private static final String DATABASE_NAME = "mobilerobotics";
 	private static final String ROBOFLY_COORDINATES_FIELD_KEY = "currentLocation";
@@ -238,10 +240,10 @@ class MongoConnector {
 		
 		double[][] coordinates = createCoordinatesList(bugrouteCoordinates);
 		
-		DBObject coordinatesList = new BasicDBObject("coordinates", coordinates);
+		DBObject coordinatesList = new BasicDBObject(ROUTE_COORDINATES_FIELD_KEY, coordinates);
 		location.putAll(coordinatesList);
 		
-		bugrouteDocument.put("location", location);
+		bugrouteDocument.put(ROUTE_LOCATION_FIELD_KEY, location);
 		
 		routesCollection.insert(bugrouteDocument);
 	}
@@ -267,5 +269,12 @@ class MongoConnector {
 			coordinates[position] = firstCoordinate;
 		}
 		return coordinates;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<double[]> getBugRouteCoordinateList() {
+		DBObject bugRouteDoc = routesCollection.findOne();
+		DBObject location = (DBObject) bugRouteDoc.get(ROUTE_LOCATION_FIELD_KEY);
+		return (List<double[]>) location.get(ROUTE_COORDINATES_FIELD_KEY);
 	}
 }

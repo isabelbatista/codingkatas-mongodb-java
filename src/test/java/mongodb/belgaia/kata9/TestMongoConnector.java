@@ -28,7 +28,7 @@ public class TestMongoConnector {
 	
 	@After
 	public void tearDown() {
-//		connector.dropDatabase();
+		connector.dropDatabase();
 	}
 	
 	@Test
@@ -56,6 +56,17 @@ public class TestMongoConnector {
 		List<double[]> bugrouteCoordinates = connector.getBugRouteCoordinateList();
 		
 		Assert.assertEquals(6, bugrouteCoordinates.size());
+	}
+	
+	@Test
+	public void findRoboFlyWithinAreaOfBugRoute() {
+		
+		connector.createBugRouteDocument(getDummyBugCoordinatesMap());
+		
+		List<String> roboFlyIds = connector.findRoboFlyWithinBugTerritory();
+		
+		Assert.assertEquals(1, roboFlyIds.size());
+		Assert.assertEquals("RoboFly_ID_5", roboFlyIds.get(0));		
 	}
 	
 	private Map<String, double[]> getDummyBugCoordinatesMap() {

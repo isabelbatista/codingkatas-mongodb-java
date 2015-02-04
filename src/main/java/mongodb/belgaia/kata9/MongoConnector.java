@@ -242,14 +242,48 @@ class MongoConnector {
 		
 		DBObject coordinatesList = new BasicDBObject(ROUTE_COORDINATES_FIELD_KEY, coordinates);
 		location.putAll(coordinatesList);
-		
+			
 		bugrouteDocument.put(ROUTE_LOCATION_FIELD_KEY, location);
 		
 		routesCollection.insert(bugrouteDocument);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<double[]> getBugRouteCoordinateList() {
+		DBObject bugRouteDoc = routesCollection.findOne();
+		DBObject location = (DBObject) bugRouteDoc.get(ROUTE_LOCATION_FIELD_KEY);
+		return (List<double[]>) location.get(ROUTE_COORDINATES_FIELD_KEY);
+	}
+
+	public List<String> findRoboFlyWithinBugTerritory() {
+		
+		// get the bug route location information
+		DBObject bugRoute = routesCollection.findOne(new BasicDBObject("_id", "BUGROUTE_1"));
+		DBObject bugRouteLocationInfo = (DBObject) bugRoute.get("location");
+		DBObject coordinates = (DBObject) bugRouteLocationInfo.get("coordinates");
+		
+		// create polygon document part
+		DBObject polygon = new BasicDBObject("$polygon", coordinates);
+		
+		// create geowithin document part
+		DBObject geowithin = new BasicDBObject("$geoWithin", polygon);
+		
+		// current location document part
+		DBObject roboFlySearchQuery = new BasicDBObject("currentLocation", geowithin);
+		DBCursor roboFlies = robofliesCollection.find(roboFlySearchQuery);
+		
+		List<String> roboFlyIdsWithinBugTerritory = new ArrayList<String>();
+		while(roboFlies.hasNext()) {
+			DBObject roboFlyDoc = roboFlies.next();
+			roboFlyIdsWithinBugTerritory.add((String) roboFlyDoc.get("_id"));
+		}
+		
+		return roboFlyIdsWithinBugTerritory;
+	}
+	
 	private double[][] createCoordinatesList(
-			Map<String, double[]> bugrouteCoordinates) {
+			Map<String, double[]> bugrouteCoordinates) {	
+		
 		double[][] coordinates = new double[bugrouteCoordinates.size()+1][2];
 		int position = 0;
 		double[] firstCoordinate = null;
@@ -269,12 +303,5 @@ class MongoConnector {
 			coordinates[position] = firstCoordinate;
 		}
 		return coordinates;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<double[]> getBugRouteCoordinateList() {
-		DBObject bugRouteDoc = routesCollection.findOne();
-		DBObject location = (DBObject) bugRouteDoc.get(ROUTE_LOCATION_FIELD_KEY);
-		return (List<double[]>) location.get(ROUTE_COORDINATES_FIELD_KEY);
 	}
 }

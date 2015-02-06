@@ -32,4 +32,31 @@ public class Kata9 {
 		fileReader = new CSVFileReader();
 		return fileReader.getContentOfBugrouteCsv();
 	}
+
+	public void startKata9() {
+		
+		System.out.println("");
+		System.out.println("Insert bug territory path points as polygon.");
+		System.out.println("##############################################");
+		System.out.println("");
+		
+		insertBugTerritoryCoordinates();
+		
+		System.out.println("");
+		System.out.println("Find roboflies with station in bug territory.");
+		System.out.println("##############################################");
+		System.out.println("");
+		
+		List<String> roboFlyIds = findRoboFliesWithinBugTerritory();
+		
+		System.out.print("Following roboflies can be found within the bug territory: ");
+		
+		for(int position=0; position<=roboFlyIds.size()-1; position++) {
+			System.out.print(roboFlyIds.get(position));
+			if(position < roboFlyIds.size()-1) {
+				System.out.print(", ");
+			}
+		}
+		System.out.println();
+	}
 }

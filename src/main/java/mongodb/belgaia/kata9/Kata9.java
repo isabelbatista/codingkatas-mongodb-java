@@ -1,5 +1,6 @@
 package mongodb.belgaia.kata9;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -18,21 +19,17 @@ public class Kata9 {
 		mongoConnector = new MongoConnector(databaseName);
 	}
 
-	public void findRoboFliesWithinBugTerritory() {
-		
-		
+	public List<String> findRoboFliesWithinBugTerritory() {
+		return mongoConnector.findRoboFlyWithinBugTerritory();
 	}
 	
 	public void insertBugTerritoryCoordinates() {
-		fileReader = new CSVFileReader();
-		Map<String, double[]> bugrouteCoordinates = fileReader.getContentOfBugrouteCsv();
-		
-		mongoConnector.createBugRouteDocument(bugrouteCoordinates);		
+				
+		mongoConnector.createBugRouteDocument(getBugTerritoryCoordinates());		
 	}
 
 	public Map<String, double[]> getBugTerritoryCoordinates() {
-		// TODO Auto-generated method stub
-		return null;
+		fileReader = new CSVFileReader();
+		return fileReader.getContentOfBugrouteCsv();
 	}
-	
 }

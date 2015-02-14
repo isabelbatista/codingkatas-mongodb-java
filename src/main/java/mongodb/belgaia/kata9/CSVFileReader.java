@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CSVFileReader {
+class CSVFileReader {
 	
 	private static final String ROBOFLY_POSITION_FILENAME = "src/test/resources/kata9/roboflyPositions.csv"; 	
 	private static final String BUGROUTE_FILENAME = "src/test/resources/kata9/bugroute.csv"; 		

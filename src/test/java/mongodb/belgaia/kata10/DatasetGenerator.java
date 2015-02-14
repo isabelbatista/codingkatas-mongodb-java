@@ -17,21 +17,25 @@ public class DatasetGenerator {
 	
 	private static final String ROBOFLY_ID_PREFIX = "RoboFly_ID_";
 	private static final int ROBOFLY_ID_MAX_NUMBER = 9;
-	private static final String SEPARATOR = ";";
+	private static final String SEPARATOR = ",";
 	private static final String DEFAULT_CURRENCY = "EUR";
+	
+	private static final String COST_ITEM_ID_FIELD_NAME = "COST_ITEM_ID_";
 	private static final String COSTS_FIELD_NAME = "costs_in_euro";
 	private static final String COST_ID_FIELD_NAME = "_id";
-	private static final String ROBOFLY_ID_FIELD_NAME = "robofly_id";
+	private static final String ROBOFLY_ID_FIELD_NAME = "roboFlyId";
 	private static final String COST_TYPE_FIELD_NAME = "cost_type";
 	
 	private static final String FILEPATH = "src/test/resources/kata10/";
-	private static final String FILENAME = "costs.csv";
+	private static final String FILENAME = "cost_items.csv";
 	
 	private static final int MAX_ENERGY_COST_ITEMS = 2000;
 	private static final int MAX_UPGRADE_COST_ITEMS = 15;
 	private static final int MAX_SEARCH_COST_ITEMS = 570;
 	
 	private static final Map<String, List<CostItem>> costItems = new HashMap<String, List<CostItem>>();
+	
+	private static int costItemCounter = 0;
 	
 	private static void writeFile() throws FileNotFoundException, UnsupportedEncodingException {
 		
@@ -51,8 +55,10 @@ public class DatasetGenerator {
 		return COST_ID_FIELD_NAME + "," + ROBOFLY_ID_FIELD_NAME + "," + COST_TYPE_FIELD_NAME + "," + COSTS_FIELD_NAME;
 	}
 	
-	private static String generateCostsLine(String roboFlyId, String costType, String costs) {
-		StringBuilder costsLine = new StringBuilder(roboFlyId);
+	private static String generateCostsLine(String costItemId, String roboFlyId, String costType, String costs) {
+		StringBuilder costsLine = new StringBuilder(costItemId);
+		costsLine.append(SEPARATOR);
+		costsLine.append(roboFlyId);
 		costsLine.append(SEPARATOR);
 		costsLine.append(costType);
 		costsLine.append(SEPARATOR);
@@ -62,7 +68,7 @@ public class DatasetGenerator {
 	
 	private static final void addCostItem(String roboFlyId, CostType costType, String amount) {
 		
-		CostItem costItem = new CostItem.Builder(roboFlyId).type(costType).currency(DEFAULT_CURRENCY).amount(amount).build();
+		CostItem costItem = new CostItem.Builder(roboFlyId).costItemId(COST_ITEM_ID_FIELD_NAME + ++costItemCounter).type(costType).currency(DEFAULT_CURRENCY).amount(amount).build();
 		
 		boolean roboFlyEntryFoundInMap = false;
 		
@@ -168,7 +174,7 @@ public class DatasetGenerator {
 			
 			for(CostItem costItem : costItems) {
 				StringBuilder line = new StringBuilder();
-				line.append(generateCostsLine(item.getKey(), costItem.getType().name(), costItem.getAmount()));
+				line.append(generateCostsLine(costItem.getCostItemId(), item.getKey(), costItem.getType().name(), costItem.getAmount()));
 				System.out.println(line.toString());
 				writer.println(line.toString());
 			}

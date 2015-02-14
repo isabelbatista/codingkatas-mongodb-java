@@ -83,18 +83,7 @@ class MongoConnector {
 		DBRef reference = new DBRef(database, "profiles", (String) profile.get("_id"));
 		robofliesCollection.update(new BasicDBObject("_id", roboFlyId), new BasicDBObject("$set", new BasicDBObject("typeRef", reference)));
 	}
-//	
-//	public List<RoboFly> getRoboflies() {
-//		DBCursor robofliesCursor = robofliesCollection.find();
-//		List<RoboFly> roboflies = new ArrayList<RoboFly>();
-//		
-//		while(robofliesCursor.hasNext()) {
-//			RoboFly roboFly = convertRoboFlyDocumentToRoboFly(robofliesCursor.next());
-//			roboflies.add(roboFly);
-//		}
-//		return roboflies;
-//	}
-//	
+
 	public List<DBObject> getRoboflyDocuments() {
 		DBCursor robofliesCursor = robofliesCollection.find();
 		List<DBObject> roboflies = new ArrayList<DBObject>();
@@ -104,31 +93,7 @@ class MongoConnector {
 		}
 		return roboflies;
 	}
-//
-//	
-	
-//
-//	public List<RoboFly> findRoboFliesNearByBug(double[] bugCoordinates, int countOfFlies) {
-//		
-//		BasicDBList bugLocation = new BasicDBList();
-//		bugLocation.put(0, bugCoordinates[0]);
-//		bugLocation.put(1, bugCoordinates[1]);
-//	
-//		DBObject query = new BasicDBObject("currentLocation", new BasicDBObject("$near", bugLocation));
-//		
-//		DBCursor roboFlies = robofliesCollection.find(query);
-//	    
-//	    List<RoboFly> nearestRoboFlies = new ArrayList<RoboFly>();
-//	    int roboFliesCounter = 0;
-//	    
-//	    while(roboFliesCounter < countOfFlies && roboFlies.hasNext()) {
-//	    	nearestRoboFlies.add(convertRoboFlyDocumentToRoboFly(roboFlies.next()));
-//	    	roboFliesCounter++;
-//	    }
-//		
-//		return nearestRoboFlies;
-//	}
-//	
+
 	/**
 	 * Adds a new field for coordinates of the roboflies and creates a new index of all
 	 * roboflies as 2D mongodb legacy coordinates.

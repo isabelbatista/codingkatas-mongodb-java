@@ -11,6 +11,7 @@ import java.util.Map;
 public class DatasetGenerator {
 	
 	private static final String ROBOFLY_ID_PREFIX = "RoboFly_ID_";
+	private static final int ROBOFLY_ID_MAX_NUMBER = 9;
 	private static final String SEPARATOR = ";";
 	private static final String DEFAULT_CURRENCY = "Eur";
 	private static final String COSTS_FIELD_NAME = "costs_in_euro";
@@ -21,7 +22,7 @@ public class DatasetGenerator {
 	private static final String FILEPATH = "src/test/resources/kata10/";
 	private static final String FILENAME = "costs.csv";
 	
-	private static final int MAX_ENERGY_COST_ITEMS = 1;
+	private static final int MAX_ENERGY_COST_ITEMS = 2000;
 	
 	private static final Map<String, List<CostItem>> costItems = new HashMap<String, List<CostItem>>();
 	
@@ -89,10 +90,12 @@ public class DatasetGenerator {
 		// ENERGY cost items
 		double min = 0.25;
 		double max = 5.10;
-		for(int i=0; i<=MAX_ENERGY_COST_ITEMS-1; i++) {
-			double randomEnergyCostAmount = Math.random() * (max - min) + min;
-			addCostItem(ROBOFLY_ID_PREFIX + "1", CostType.ENERGY, String.valueOf(randomEnergyCostAmount));
-		}		
+		for(int roboFlyCount=1; roboFlyCount <= ROBOFLY_ID_MAX_NUMBER; roboFlyCount++) {
+			for(int energyCostCount=0; energyCostCount<=MAX_ENERGY_COST_ITEMS-1; energyCostCount++) {
+				double randomEnergyCostAmount = Math.random() * (max - min) + min;
+				addCostItem(ROBOFLY_ID_PREFIX + roboFlyCount, CostType.ENERGY, String.valueOf(randomEnergyCostAmount));
+			}
+		}
 	}
 	
 	private static void addCostsToWriter(PrintWriter writer) {

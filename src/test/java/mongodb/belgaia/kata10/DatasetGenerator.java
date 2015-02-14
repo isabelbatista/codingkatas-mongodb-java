@@ -10,10 +10,15 @@ import java.util.Map;
 
 public class DatasetGenerator {
 	
+	private static final int MAX_REPAIRS_TYPE_COPEPOD = 439; //1; //439;
+	private static final int MAX_REPAIRS_TYPE_MOSKITO = 3814; //4; //3814;
+	private static final int MAX_REPAIRS_TYPE_DRAGONFLY = 1916; //2; //1916;
+	private static final int MAX_REPAIRS_TYPE_FLY = 2500; //3; //2500;
+	
 	private static final String ROBOFLY_ID_PREFIX = "RoboFly_ID_";
 	private static final int ROBOFLY_ID_MAX_NUMBER = 9;
 	private static final String SEPARATOR = ";";
-	private static final String DEFAULT_CURRENCY = "Eur";
+	private static final String DEFAULT_CURRENCY = "EUR";
 	private static final String COSTS_FIELD_NAME = "costs_in_euro";
 	private static final String COST_ID_FIELD_NAME = "_id";
 	private static final String ROBOFLY_ID_FIELD_NAME = "robofly_id";
@@ -23,6 +28,8 @@ public class DatasetGenerator {
 	private static final String FILENAME = "costs.csv";
 	
 	private static final int MAX_ENERGY_COST_ITEMS = 2000;
+	private static final int MAX_UPGRADE_COST_ITEMS = 15;
+	private static final int MAX_SEARCH_COST_ITEMS = 570;
 	
 	private static final Map<String, List<CostItem>> costItems = new HashMap<String, List<CostItem>>();
 	
@@ -87,7 +94,13 @@ public class DatasetGenerator {
 		addCostItem(ROBOFLY_ID_PREFIX + "8", CostType.INVESTMENT, "8000,00");
 		addCostItem(ROBOFLY_ID_PREFIX + "9", CostType.INVESTMENT, "8000,00");
 		
-		// ENERGY cost items
+		collectEnergyCostItems();
+		collectRepairCostItems();
+		collectUpgradeCostItems();
+		collectSearchCostItems();
+	}
+	
+	private static final void collectEnergyCostItems() {
 		double min = 0.25;
 		double max = 5.10;
 		for(int roboFlyCount=1; roboFlyCount <= ROBOFLY_ID_MAX_NUMBER; roboFlyCount++) {
@@ -96,6 +109,57 @@ public class DatasetGenerator {
 				addCostItem(ROBOFLY_ID_PREFIX + roboFlyCount, CostType.ENERGY, String.valueOf(randomEnergyCostAmount));
 			}
 		}
+	}
+	
+	private static final void collectRepairCostItems() {
+		double min = 5.00;
+		double max = 2845.00;
+		
+		for(int roboFlyCount=1; roboFlyCount <= ROBOFLY_ID_MAX_NUMBER; roboFlyCount++) {
+			
+			int maxRepairCostItems = 0;
+			switch(roboFlyCount) {
+				case 1 : case 2 : case 3: maxRepairCostItems = MAX_REPAIRS_TYPE_FLY;
+					break;
+				case 4 : case 5: maxRepairCostItems = MAX_REPAIRS_TYPE_DRAGONFLY;
+					break;
+				case 6 : case 7: maxRepairCostItems = MAX_REPAIRS_TYPE_MOSKITO; // highest repair costs
+					break;
+				case 8 : case 9: maxRepairCostItems = MAX_REPAIRS_TYPE_COPEPOD;
+					break;
+				default: maxRepairCostItems = 1000;
+					break;
+			}
+			
+			for(int repairCostItems=0; repairCostItems<=maxRepairCostItems-1; repairCostItems++) {
+				double randomRepairCostAmount = Math.random() * (max - min) + min;
+				addCostItem(ROBOFLY_ID_PREFIX + roboFlyCount, CostType.REPAIR, String.valueOf(randomRepairCostAmount));
+			}
+		}
+	}
+	
+	public static final void collectUpgradeCostItems() {
+		double min = 1000.00;
+		double max = 12500.00;
+		
+		for(int roboFlyCount=1; roboFlyCount <= ROBOFLY_ID_MAX_NUMBER; roboFlyCount++) {
+			for(int upgradeCostItems=0; upgradeCostItems<=MAX_UPGRADE_COST_ITEMS-1; upgradeCostItems++) {
+				double randomUpgradeCostAmount = Math.random() * (max - min) + min;
+				addCostItem(ROBOFLY_ID_PREFIX + roboFlyCount, CostType.UPGRADE, String.valueOf(randomUpgradeCostAmount));
+			}
+		}
+	}
+	
+	public static final void collectSearchCostItems() {
+		double min = 1.25;
+		double max = 100.00;
+		
+		for(int roboFlyCount=1; roboFlyCount <= ROBOFLY_ID_MAX_NUMBER; roboFlyCount++) {
+			for(int searchCostItems=0; searchCostItems<=MAX_SEARCH_COST_ITEMS-1; searchCostItems++) {
+				double randomSearchCostAmount = Math.random() * (max - min) + min;
+				addCostItem(ROBOFLY_ID_PREFIX + roboFlyCount, CostType.SEARCH, String.valueOf(randomSearchCostAmount));
+			}
+		}		
 	}
 	
 	private static void addCostsToWriter(PrintWriter writer) {

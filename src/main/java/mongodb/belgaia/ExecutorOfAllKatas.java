@@ -1,6 +1,7 @@
 package mongodb.belgaia;
 
 import mongodb.belgaia.kata1.Kata1;
+import mongodb.belgaia.kata10.Kata10;
 import mongodb.belgaia.kata2.Kata2;
 import mongodb.belgaia.kata3.CollectionDoesNotExistExc;
 import mongodb.belgaia.kata3.Kata3;
@@ -116,6 +117,14 @@ public class ExecutorOfAllKatas {
 		kataSolution.startKata9();
 	}
 	
+	private void startKataTen() {
+		System.out.println("Executing Kata 10");
+		System.out.println("################");
+		
+		Kata10 kataSolution = new Kata10();
+		kataSolution.startKata10();
+	}
+	
 	public static final void main (String[] args) {
 		
 		try {
@@ -129,6 +138,7 @@ public class ExecutorOfAllKatas {
 			executor.startKataSeven();
 			executor.startKataEight();
 			executor.startKataNine();
+			executor.startKataTen();
 		} catch (CollectionDoesNotExistExc e) {
 			e.printStackTrace();
 		}

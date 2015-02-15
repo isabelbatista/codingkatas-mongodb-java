@@ -29,7 +29,7 @@ public class TestMongoConnector {
 	@Test
 	public void shouldImportCostsDatasheetToDatabase() {
 		
-		mongodbConnector.importData2MongoDb(COST_DATASHEET_FILENAME, "costs");
+		mongodbConnector.importCostsDataToMongoDb();
 		
 		try {
 			System.out.println("--- Waiting for some seconds ---");

@@ -16,7 +16,10 @@ import com.mongodb.Mongo;
 public class MongoConnector {
 
 	private static final String DATABASE_NAME = "mobilerobotics";
+	private static final String COSTS_COLLECTION_NAME = "costs";
 	
+	private static final String COST_DATASHEET_FILENAME = "src/main/resources/kata10/cost_items.csv";
+
 	private Mongo client;
 	private DB database;
 	
@@ -48,11 +51,15 @@ public class MongoConnector {
 	private void initDatabaseElements() {	
 		robofliesCollection = database.getCollection("roboflies");
 		profilesCollection = database.getCollection("profiles");
-		costsCollection = database.getCollection("costs");
+		costsCollection = database.getCollection(COSTS_COLLECTION_NAME);
 	}
 	
 	public void dropDatabase() {
 		database.dropDatabase();
+	}
+	
+	public void importCostsDataToMongoDb() {
+		importData2MongoDb(COST_DATASHEET_FILENAME, COSTS_COLLECTION_NAME);
 	}
 	
 	public void importData2MongoDb(String fileName, String collectionName) {

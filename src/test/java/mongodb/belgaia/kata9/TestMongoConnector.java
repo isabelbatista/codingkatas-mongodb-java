@@ -9,8 +9,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mongodb.DBObject;
-
 public class TestMongoConnector {
 	
 	private static final String DATABASE_NAME = "kataTest";
@@ -20,10 +18,8 @@ public class TestMongoConnector {
 	@Before
 	public void setUp() {
 		connector = new MongoConnector(DATABASE_NAME);
-		
 		TestPreparation preparation = new TestPreparation(DATABASE_NAME);
 		preparation.prepareDatabase();
-		
 	}
 	
 	@After

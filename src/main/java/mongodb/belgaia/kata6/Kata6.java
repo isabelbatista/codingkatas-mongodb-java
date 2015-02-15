@@ -1,8 +1,5 @@
 package mongodb.belgaia.kata6;
 
-import java.util.List;
-
-import com.mongodb.DBObject;
 
 
 public class Kata6 {

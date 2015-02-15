@@ -10,8 +10,6 @@ import org.junit.Test;
 public class TestMongoConnector {
 
 	private static final String DATABASE_NAME = "kataTest";
-	private static final String COST_DATASHEET_FILENAME = "src/test/resources/kata10/cost_items.csv";
-
 	private MongoConnector mongodbConnector;
 	
 	@Before

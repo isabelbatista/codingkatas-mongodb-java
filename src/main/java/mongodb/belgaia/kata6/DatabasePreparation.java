@@ -61,10 +61,6 @@ class DatabasePreparation {
 		}
 	}
 	
-	private List<DBObject> getAllRoboflies() {
-		return mongoConnector.getRoboflies();
-	}
-	
 	private List<DBObject> getAllChargingSets() {
 		return mongoConnector.getChargingSets();
 	}

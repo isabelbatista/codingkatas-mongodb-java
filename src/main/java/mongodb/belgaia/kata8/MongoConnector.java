@@ -24,7 +24,6 @@ class MongoConnector {
 	
 	private DBCollection robofliesCollection;
 	private DBCollection profilesCollection;
-	private DBCollection bugrouteCollection;
 	
 	public MongoConnector() {
 		try {

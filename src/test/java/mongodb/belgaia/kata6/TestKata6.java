@@ -27,6 +27,7 @@ public class TestKata6 {
 	@After
 	public void tearDown() {
 		mongoConnector.dropDatabase();
+		mongoConnector.closeConnection();
 	}
 	
 	@Test

@@ -25,6 +25,7 @@ public class TestKata7 {
 	@After
 	public void tearDown() {
 		connector.dropDatabase();
+		connector.closeConnection();
 	}
 	
 	@Test

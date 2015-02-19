@@ -38,6 +38,10 @@ class MongoUpdater {
 			e.printStackTrace();
 		}
 	}
+	
+	public void closeConnection() {
+		client.close();
+	}
 
 	public MongoUpdater(String databaseName) {
 		try {

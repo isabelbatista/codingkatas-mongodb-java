@@ -38,6 +38,10 @@ public class MongoAggregator {
 		}
 	}
 	
+	public void closeConnection() {
+		client.close();
+	}
+	
 	public MongoAggregator(String databaseName) {
 		
 		try {

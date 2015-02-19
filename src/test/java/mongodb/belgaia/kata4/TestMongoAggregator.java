@@ -27,6 +27,7 @@ public class TestMongoAggregator {
 	@After
 	public void tearDown() {
 		aggregator.dropDatabase();
+		aggregator.closeConnection();
 	}
 	
 	@Test

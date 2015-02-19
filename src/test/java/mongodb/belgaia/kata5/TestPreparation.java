@@ -11,16 +11,17 @@ import com.mongodb.DBObject;
 class TestPreparation {
 	
 	private static final String DATABASE_NAME = "kataTest";
-	private MongoUpdater kata = new MongoUpdater(DATABASE_NAME);
+	private static final MongoUpdater kata = new MongoUpdater(DATABASE_NAME);
 	private static final TestPreparation preparation = new TestPreparation();
 	
 	public static void prepareDatabase() {
-
 		List<DBObject> profiles = preparation.createInitialProfiles();
 		List<DBObject> roboFlies = preparation.createInitialRoboFlies();
 		
 		preparation.addDummyAdditionalInformation();
 		preparation.addDocumentReferences(roboFlies, profiles);
+		
+		kata.closeConnection();
 	}
 	
 	private void addDocumentReferences(List<DBObject> roboFlies, List<DBObject> profiles) {

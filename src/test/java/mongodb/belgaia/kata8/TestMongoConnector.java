@@ -29,6 +29,7 @@ public class TestMongoConnector {
 	@After
 	public void tearDown() {
 		connector.dropDatabase();
+		connector.closeConnection();
 	}
 	
 	@Test

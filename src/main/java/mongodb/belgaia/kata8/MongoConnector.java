@@ -46,6 +46,10 @@ class MongoConnector {
 		}
 	}
 	
+	public void closeConnection() {
+		client.close();
+	}
+	
 	public void importData2MongoDb(String fileName, String collectionName) {
 		
 		String exportType = "csv";

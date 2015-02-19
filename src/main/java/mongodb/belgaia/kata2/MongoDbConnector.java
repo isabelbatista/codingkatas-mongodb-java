@@ -22,11 +22,12 @@ import com.mongodb.Mongo;
 public class MongoDbConnector {
 	
 	private DB database;
+	private Mongo mongoDbClient;
 	
 	public MongoDbConnector(String databaseName) {
 		
 		try {
-			Mongo mongoDbClient = new Mongo("localhost", 27017);
+			mongoDbClient = new Mongo("localhost", 27017);
 			database = mongoDbClient.getDB(databaseName);
 			
 		} catch (UnknownHostException e) {
@@ -35,8 +36,11 @@ public class MongoDbConnector {
 	}
 	
 	public void dropDatabase() {
-		
 		database.dropDatabase();
+	}
+	
+	public void closeConnection() {
+		mongoDbClient.close();
 	}
 	
 	/**

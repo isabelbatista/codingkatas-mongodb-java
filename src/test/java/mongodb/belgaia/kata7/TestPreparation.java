@@ -25,6 +25,7 @@ class TestPreparation {
 		}
 
 		addDocumentReferences();
+		connector.closeConnection();
 	}
 	
 	private void importDataFiles() {

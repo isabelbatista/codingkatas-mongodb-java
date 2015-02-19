@@ -22,6 +22,7 @@ public class TestMongoImporteur {
 	public void tearDown() {
 		
 		mongodbConnector.dropDatabase();
+		mongodbConnector.closeConnection();
 	}
 	
 	@Test

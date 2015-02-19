@@ -24,6 +24,7 @@ public class TestRoboFliesPersistence {
 	public void tearDown() {
 		
 		persistence.dropDatabase();
+		persistence.closeConnection();
 	}
 	
 	@Test

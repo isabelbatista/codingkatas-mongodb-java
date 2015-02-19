@@ -42,6 +42,10 @@ class MongoConnector {
 		}
 	}
 	
+	public void closeConnection() {
+		client.close();
+	}
+	
 	public MongoConnector(String databaseName) {
 		
 		try {

@@ -43,6 +43,10 @@ public class Kata3 {
 		}		
 	}
 	
+	public void closeConnection() {
+		mongodbClient.close();
+	}
+	
 	public void startKata3() {
 		
 		System.out.println("Save additional robotic files of type dragonfly, moskito and copepod.");

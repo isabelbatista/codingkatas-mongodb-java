@@ -27,7 +27,6 @@ public class TestMongoDbConnector {
 	@After
 	public void tearDown() {
 		mongodbConnector.dropDatabase();
-		mongodbConnector.closeConnection();
 	}
 	
 	@Test

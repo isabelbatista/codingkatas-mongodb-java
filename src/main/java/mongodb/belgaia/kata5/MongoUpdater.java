@@ -38,10 +38,6 @@ class MongoUpdater {
 			e.printStackTrace();
 		}
 	}
-	
-	public void closeConnection() {
-		client.close();
-	}
 
 	public MongoUpdater(String databaseName) {
 		try {
@@ -61,6 +57,7 @@ class MongoUpdater {
 
 	public void dropDatabase() {
 		database.dropDatabase();
+		client.close();
 	}
 
 	public void changeStatus(String roboFlyId, RoboFlyStatus status) {

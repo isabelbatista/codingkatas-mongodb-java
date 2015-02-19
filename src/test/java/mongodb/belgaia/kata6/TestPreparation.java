@@ -25,7 +25,6 @@ class TestPreparation {
 		}
 
 		addDocumentReferences();
-		kata.closeConnection();
 	}
 	
 	private void importDataFiles() {

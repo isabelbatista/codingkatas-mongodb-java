@@ -8,7 +8,6 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.BasicDBObject;
@@ -28,7 +27,6 @@ public class TestKata5 {
 	@After
 	public void tearDown() {
 		kata.dropDatabase();
-		kata.closeConnection();
 	}
 	
 	@Test
@@ -40,7 +38,6 @@ public class TestKata5 {
 		Assert.assertEquals(RoboFlyStatus.OUT_OF_SERVICE.name, (String) roboFly.get("status"));
 	}
 	
-	@Ignore
 	@Test
 	public void shouldAddMoreInformationToDamagedFlies() {
 		

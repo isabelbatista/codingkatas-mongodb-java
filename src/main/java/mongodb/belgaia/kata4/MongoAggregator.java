@@ -33,13 +33,8 @@ public class MongoAggregator {
 			initDatabaseElements();
 			
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public void closeConnection() {
-		client.close();
 	}
 	
 	public MongoAggregator(String databaseName) {
@@ -147,5 +142,6 @@ public class MongoAggregator {
 	
 	public void dropDatabase() {
 		database.dropDatabase();
+		client.close();
 	}
 }

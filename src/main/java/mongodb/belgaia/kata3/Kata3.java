@@ -43,10 +43,6 @@ public class Kata3 {
 		}		
 	}
 	
-	public void closeConnection() {
-		mongodbClient.close();
-	}
-	
 	public void startKata3() {
 		
 		System.out.println("Save additional robotic files of type dragonfly, moskito and copepod.");
@@ -130,8 +126,8 @@ public class Kata3 {
 	}
 	
 	public void dropDatabase() {
-		
 		database.dropDatabase();
+		mongodbClient.close();
 	}
 	
 	public void refactorDatabase(String sourceCollection, String targetCollection) throws CollectionDoesNotExistExc {

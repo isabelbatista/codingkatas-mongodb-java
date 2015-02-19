@@ -20,8 +20,6 @@ class TestPreparation {
 		
 		preparation.addDummyAdditionalInformation();
 		preparation.addDocumentReferences(roboFlies, profiles);
-		
-		kata.closeConnection();
 	}
 	
 	private void addDocumentReferences(List<DBObject> roboFlies, List<DBObject> profiles) {

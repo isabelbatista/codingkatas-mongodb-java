@@ -22,9 +22,7 @@ public class TestRoboFliesPersistence {
 	
 	@After
 	public void tearDown() {
-		
 		persistence.dropDatabase();
-		persistence.closeConnection();
 	}
 	
 	@Test

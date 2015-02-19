@@ -40,10 +40,6 @@ public class RoboFliesPersistence {
 		}
 	}
 	
-	public void closeConnection() {
-		mongoDbClient.close();
-	}
-	
 	/**
 	 * Test instance constructor that offers setting of database
 	 * name.
@@ -97,7 +93,7 @@ public class RoboFliesPersistence {
 	}
 
 	public void dropDatabase() {
-
 		database.dropDatabase();
+		mongoDbClient.close();
 	}
 }

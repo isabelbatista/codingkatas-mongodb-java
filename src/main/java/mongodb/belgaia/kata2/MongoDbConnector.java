@@ -37,9 +37,6 @@ public class MongoDbConnector {
 	
 	public void dropDatabase() {
 		database.dropDatabase();
-	}
-	
-	public void closeConnection() {
 		mongoDbClient.close();
 	}
 	

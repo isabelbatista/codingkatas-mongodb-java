@@ -24,9 +24,7 @@ class TestPreparation {
 			e.printStackTrace();
 		}	
 		
-		addDocumentReferences();
-		
-		connector.closeConnection();
+		addDocumentReferences();		
 	}
 	
 	private void importDataFiles() {

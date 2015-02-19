@@ -34,8 +34,6 @@ class TestPreparation {
 		
 		roboFlyPositions = fileReader.getContentOfRoboFliesPositionsCsv();
 		updateRoboFliesWithCoordinates();
-		
-		connector.closeConnection();
 	}
 	
 	private void importDataFiles() {

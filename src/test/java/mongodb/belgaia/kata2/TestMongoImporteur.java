@@ -13,16 +13,13 @@ public class TestMongoImporteur {
 	
 	@Before
 	public void setUp() {
-		
 		importeur = new MongoImporteur(DATABASE_NAME);
 		mongodbConnector = new MongoDbConnector(DATABASE_NAME);
 	}
 	
 	@After
 	public void tearDown() {
-		
 		mongodbConnector.dropDatabase();
-		mongodbConnector.closeConnection();
 	}
 	
 	@Test

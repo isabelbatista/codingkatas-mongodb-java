@@ -42,10 +42,6 @@ class MongoConnector {
 		}
 	}
 	
-	public void closeConnection() {
-		client.close();
-	}
-	
 	public MongoConnector(String databaseName) {
 		
 		try {
@@ -173,6 +169,7 @@ class MongoConnector {
 	
 	public void dropDatabase() {
 		database.dropDatabase();
+		client.close();
 	}
 	
 	// FIXME: use this instead of calculating averages manually

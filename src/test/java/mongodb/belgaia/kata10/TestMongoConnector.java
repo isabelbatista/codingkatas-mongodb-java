@@ -1,6 +1,9 @@
 package mongodb.belgaia.kata10;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -40,5 +43,27 @@ public class TestMongoConnector {
 		List<CostItem> costItems = mongodbConnector.getCostItemsByRoboFly("RoboFly_ID_1", countOfCostItems);
 		
 		Assert.assertEquals(countOfCostItems, costItems.size());
+	}
+	
+	@Test
+	public void shouldReturnMostExpensiveRoboFly() {
+		
+		mongodbConnector.importCostsDataToMongoDb();
+		
+		try {
+			System.out.println("--- Waiting for some seconds ---");
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Map<String, Double> roboFly = mongodbConnector.calculateMostExpensiveRoboFly();
+		Entry<String, Double> roboFlyEntry = roboFly.entrySet().iterator().next();
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#.00");
+		String formatedCosts = decimalFormat.format(roboFlyEntry.getValue());
+		
+		Assert.assertEquals("RoboFly_ID_7", roboFlyEntry.getKey());
+		Assert.assertEquals("5622281,68", formatedCosts);
 	}
 }

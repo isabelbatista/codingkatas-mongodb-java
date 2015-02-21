@@ -3,7 +3,9 @@ package mongodb.belgaia.kata10;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -11,6 +13,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
+import com.mongodb.MapReduceCommand;
+import com.mongodb.MapReduceOutput;
 import com.mongodb.Mongo;
 
 public class MongoConnector {
@@ -113,5 +117,27 @@ public class MongoConnector {
 											.build();
 		
 		return costItem;
+	}
+
+	public Map<String, Double> calculateMostExpensiveRoboFly() {
+		
+		String map = "function() { emit(this.roboFlyId, this.costs_in_euro); };";
+		String reduce = "function(roboFlyId, costs) { return Array.sum(costs); };";
+		MapReduceCommand command = new MapReduceCommand(costsCollection, map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
+		MapReduceOutput out = costsCollection.mapReduce(command);
+		
+		double cost = 0;
+		String mostExpensiveRoboFlyId = null;
+		for(DBObject result : out.results()) {
+			System.out.println("Costs for " + result.get("_id") + ": " + result.get("value"));
+			double costOfRoboFly = (Double) result.get("value");
+			if(costOfRoboFly > cost) {
+				cost = costOfRoboFly;
+				mostExpensiveRoboFlyId = (String) result.get("_id");
+			}
+		}
+		Map<String, Double> mostExpensiveRoboFly = new HashMap<String, Double>();
+		mostExpensiveRoboFly.put(mostExpensiveRoboFlyId, cost);
+		return mostExpensiveRoboFly;
 	}
 }

@@ -31,6 +31,13 @@ public class TestMongoImporteur {
 		
 		importeur.importData2MongoDb(collectionName, exportType, fileName);
 		
+		try {
+			System.out.println("--- Waiting for some seconds ---");
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		int documentCount = mongodbConnector.getDocumentCount(collectionName);
 		Assert.assertEquals(3, documentCount);		
 	}

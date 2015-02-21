@@ -21,7 +21,10 @@ public class MongoConnector {
 
 	private static final String DATABASE_NAME = "mobilerobotics";
 	private static final String COSTS_COLLECTION_NAME = "costs";
-	
+	private static final String MAP_COSTS_ON_ROBOFLIES = "function() { emit(this.roboFlyId, this.costs_in_euro); };";
+	private static final String REDUCE_COSTS_PER_ROBOFLY_ID = "function(roboFlyId, costs) { return Array.sum(costs); };";
+	private static final String MAP_COSTS_ON_COST_TYPES = "function() { emit(this.cost_type, this.costs_in_euro); };";
+	private static final String REDUCE_COSTS_PER_COST_TYPE = "function(cost_type, costs) { return Array.sum(costs); };";
 	private static final String COST_DATASHEET_FILENAME = "src/main/resources/kata10/cost_items.csv";
 
 	private Mongo client;
@@ -121,9 +124,12 @@ public class MongoConnector {
 
 	public Map<String, Double> calculateMostExpensiveRoboFly() {
 		
-		String map = "function() { emit(this.roboFlyId, this.costs_in_euro); };";
-		String reduce = "function(roboFlyId, costs) { return Array.sum(costs); };";
-		MapReduceCommand command = new MapReduceCommand(costsCollection, map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
+		MapReduceCommand command = new MapReduceCommand(costsCollection,
+												MAP_COSTS_ON_ROBOFLIES,
+												REDUCE_COSTS_PER_ROBOFLY_ID,
+												null,
+												MapReduceCommand.OutputType.INLINE,
+												null);
 		MapReduceOutput out = costsCollection.mapReduce(command);
 		
 		double cost = 0;
@@ -141,10 +147,13 @@ public class MongoConnector {
 	}
 
 	public Map<String, Double> calculateCostTypeWithHighestExpenses() {
-		
-		String map = "function() { emit(this.cost_type, this.costs_in_euro); };";
-		String reduce = "function(cost_type, costs) { return Array.sum(costs); };";
-		MapReduceCommand command = new MapReduceCommand(costsCollection, map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
+	
+		MapReduceCommand command = new MapReduceCommand(costsCollection,
+										MAP_COSTS_ON_COST_TYPES,
+										REDUCE_COSTS_PER_COST_TYPE,
+										null,
+										MapReduceCommand.OutputType.INLINE,
+										null);
 		MapReduceOutput out = costsCollection.mapReduce(command);
 		
 		double cost = 0;

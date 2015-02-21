@@ -24,7 +24,7 @@ public class TestMongoConnector {
 	
 	@After
 	public void tearDown() {
-//		mongodbConnector.dropDatabase();
+		mongodbConnector.dropDatabase();
 	}
 	
 	@Test

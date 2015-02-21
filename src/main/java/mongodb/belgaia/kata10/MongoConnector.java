@@ -132,17 +132,7 @@ public class MongoConnector {
 												null);
 		MapReduceOutput out = costsCollection.mapReduce(command);
 		
-		double cost = 0;
-		String mostExpensiveRoboFlyId = null;
-		for(DBObject result : out.results()) {
-			double costOfRoboFly = (Double) result.get("value");
-			if(costOfRoboFly > cost) {
-				cost = costOfRoboFly;
-				mostExpensiveRoboFlyId = (String) result.get("_id");
-			}
-		}
-		Map<String, Double> mostExpensiveRoboFly = new HashMap<String, Double>();
-		mostExpensiveRoboFly.put(mostExpensiveRoboFlyId, cost);
+		Map<String, Double> mostExpensiveRoboFly = pickHighestValue(out.results());
 		return mostExpensiveRoboFly;
 	}
 
@@ -156,17 +146,24 @@ public class MongoConnector {
 										null);
 		MapReduceOutput out = costsCollection.mapReduce(command);
 		
-		double cost = 0;
-		String mostExpensiveCostType = null;
-		for(DBObject result : out.results()) {
-			double sumOfCostType = (Double) result.get("value");
-			if(sumOfCostType > cost) {
-				cost = sumOfCostType;
-				mostExpensiveCostType = (String) result.get("_id");
+		Map<String, Double> mostExpensiveCostTypeMap = pickHighestValue(out.results());
+		return mostExpensiveCostTypeMap;
+	}
+
+	private Map<String, Double> pickHighestValue(Iterable<DBObject> results) {
+		
+		double highestValue = 0;
+		String highestValueId = null;
+		
+		for(DBObject result : results) {
+			double currentValue = (Double) result.get("value");
+			if(currentValue > highestValue) {
+				highestValue = currentValue;
+				highestValueId = (String) result.get("_id");
 			}
 		}
-		Map<String, Double> mostExpensiveCostTypeMap = new HashMap<String, Double>();
-		mostExpensiveCostTypeMap.put(mostExpensiveCostType, cost);
-		return mostExpensiveCostTypeMap;
+		Map<String, Double> highestValueMap = new HashMap<String, Double>();
+		highestValueMap.put(highestValueId, highestValue);
+		return highestValueMap;
 	}
 }

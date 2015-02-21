@@ -66,4 +66,26 @@ public class TestMongoConnector {
 		Assert.assertEquals("RoboFly_ID_7", roboFlyEntry.getKey());
 		Assert.assertEquals("5622281,68", formatedCosts);
 	}
+	
+	@Test
+	public void shouldReturnCostTypeWithHighestExpenses() {
+		
+		mongodbConnector.importCostsDataToMongoDb();
+		
+		try {
+			System.out.println("--- Waiting for some seconds ---");
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		Map<String, Double> costTypeMap = mongodbConnector.calculateCostTypeWithHighestExpenses();
+		Entry<String, Double> costTypeEntry = costTypeMap.entrySet().iterator().next();
+		
+		DecimalFormat format = new DecimalFormat("#.00");
+		String formatedCosts = format.format(costTypeEntry.getValue());
+		
+		Assert.assertEquals("REPAIR", costTypeEntry.getKey());
+		Assert.assertEquals("28422110,76", formatedCosts);
+	}
 }

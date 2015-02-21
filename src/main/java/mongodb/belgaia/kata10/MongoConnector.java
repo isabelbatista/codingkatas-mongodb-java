@@ -129,7 +129,6 @@ public class MongoConnector {
 		double cost = 0;
 		String mostExpensiveRoboFlyId = null;
 		for(DBObject result : out.results()) {
-			System.out.println("Costs for " + result.get("_id") + ": " + result.get("value"));
 			double costOfRoboFly = (Double) result.get("value");
 			if(costOfRoboFly > cost) {
 				cost = costOfRoboFly;
@@ -139,5 +138,26 @@ public class MongoConnector {
 		Map<String, Double> mostExpensiveRoboFly = new HashMap<String, Double>();
 		mostExpensiveRoboFly.put(mostExpensiveRoboFlyId, cost);
 		return mostExpensiveRoboFly;
+	}
+
+	public Map<String, Double> calculateCostTypeWithHighestExpenses() {
+		
+		String map = "function() { emit(this.cost_type, this.costs_in_euro); };";
+		String reduce = "function(cost_type, costs) { return Array.sum(costs); };";
+		MapReduceCommand command = new MapReduceCommand(costsCollection, map, reduce, null, MapReduceCommand.OutputType.INLINE, null);
+		MapReduceOutput out = costsCollection.mapReduce(command);
+		
+		double cost = 0;
+		String mostExpensiveCostType = null;
+		for(DBObject result : out.results()) {
+			double sumOfCostType = (Double) result.get("value");
+			if(sumOfCostType > cost) {
+				cost = sumOfCostType;
+				mostExpensiveCostType = (String) result.get("_id");
+			}
+		}
+		Map<String, Double> mostExpensiveCostTypeMap = new HashMap<String, Double>();
+		mostExpensiveCostTypeMap.put(mostExpensiveCostType, cost);
+		return mostExpensiveCostTypeMap;
 	}
 }

@@ -21,10 +21,13 @@ public class MongoConnector {
 
 	private static final String DATABASE_NAME = "mobilerobotics";
 	private static final String COSTS_COLLECTION_NAME = "costs";
+	
+	// Queries
 	private static final String MAP_COSTS_ON_ROBOFLIES = "function() { emit(this.roboFlyId, this.costs_in_euro); };";
 	private static final String REDUCE_COSTS_PER_ROBOFLY_ID = "function(roboFlyId, costs) { return Array.sum(costs); };";
 	private static final String MAP_COSTS_ON_COST_TYPES = "function() { emit(this.cost_type, this.costs_in_euro); };";
-	private static final String REDUCE_COSTS_PER_COST_TYPE = "function(cost_type, costs) { return Array.sum(costs); };";
+	private static final String REDUCE_COSTS_PER_COST_TYPE = "function(cost_type, costs) { return Array.sum(costs); };";	
+	
 	private static final String COST_DATASHEET_FILENAME = "src/main/resources/kata10/cost_items.csv";
 
 	private Mongo client;
@@ -63,6 +66,7 @@ public class MongoConnector {
 	
 	public void dropDatabase() {
 		database.dropDatabase();
+		client.close();
 	}
 	
 	public void importCostsDataToMongoDb() {
